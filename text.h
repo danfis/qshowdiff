@@ -22,7 +22,7 @@ class Text{
     bool operator==(const Text &t) const;
     bool operator!=(const Text &t) const { return !(*this == t); }
 
-    void add(QString *);
+    void addLine(QString *);
     int numLines() const { return _text.size(); }
 
     iterator begin() const;
@@ -50,4 +50,4 @@ class Text{
 };
 
 #endif
-/* vim: set sw=4 ts=4 et ft=c++ : */
+/* vim: set sw=4 ts=4 et ft=cpp : */

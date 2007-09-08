@@ -9,17 +9,17 @@ TEST_CASE(TestCaseText);
 Text t;
 void setUp()
 {
-	t.add(new QString("Line1"));
-	t.add(new QString("Line2"));
-	t.add(new QString("Line3"));
-	t.add(new QString("Line4"));
+	t.addLine(new QString("Line1"));
+	t.addLine(new QString("Line2"));
+	t.addLine(new QString("Line3"));
+	t.addLine(new QString("Line4"));
 }
 
 void testAdd()
 {
 	Text t2;
-	t2.add(new QString("Line1"));
-	t2.add(new QString("Line2"));
+	t2.addLine(new QString("Line1"));
+	t2.addLine(new QString("Line2"));
 
 	assertEquals(t2.numLines(), 2);
 }

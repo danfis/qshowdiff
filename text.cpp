@@ -36,7 +36,7 @@ bool Text::operator==(const Text &t) const
     return true;
 }
 
-void Text::add(QString *qs)
+void Text::addLine(QString *qs)
 {
     _text.push_back(qs);
 }
