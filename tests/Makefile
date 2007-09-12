@@ -8,15 +8,15 @@ QT_LIBS = -lQtCore -L/opt/qt4/lib/ -lz -lm -pthread -lgthread-2.0 -lrt \
 ALLFLAGS = $(CXXFLAGS) $(DEBUGFLAGS) $(QT_FLAGS)
 ALLLIBS = -lcppu $(QT_LIBS)
 
-TEST_SUITES = text.cpp
-TEST_DEPS = ../text.cpp ../text.h
-OBJS = ../text.o
+TEST_SUITES = text.cpp snippet.cpp
+TEST_DEPS = ../text.cpp ../text.h ../snippet.cpp ../snippet.h
+OBJS = ../text.o ../snippet.o
 
 
 
 all: run_tests
 run_tests: test
-	-./test
+	-cppu-aggregate ./test
 	@echo
 	@echo -ne "Press key to start valgrind "
 	@read key

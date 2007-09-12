@@ -76,7 +76,3 @@ TESTS{
 }
 TEST_CASE_END;
 
-TEST_SUITE(TestSuiteText);
-REG(TestCaseText);
-TEST_SUITE_END;
-
