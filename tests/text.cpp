@@ -66,6 +66,10 @@ void testIterator()
 	assertTrue(it-- == --it);
 	it_end = it;
 	assertTrue(it == it_end);
+
+    it = t.begin();
+    Text::iterator it2(it);
+    assertTrue(it2 == it);
 }
 
 TESTS{

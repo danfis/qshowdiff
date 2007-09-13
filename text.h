@@ -4,6 +4,8 @@
 #include <QString>
 #include <vector>
 
+#include "utils.h"
+
 class Text{
   private:
     std::vector<QString *> _text;
@@ -28,22 +30,8 @@ class Text{
     iterator begin() const;
     iterator end() const;
 
-    class iterator{
-      private:
-        std::vector<QString *>::const_iterator it;
-
+    class iterator : public VectorPointerIterator<QString>{
       public:
-        iterator(){}
-        iterator(const iterator &iter) : it(iter.it){}
-        iterator &operator=(const iterator& iter){ it = iter.it; return *this; }
-        bool operator==(const iterator& iter){ return it == iter.it; }
-        bool operator!=(const iterator& iter){ return it != iter.it; }
-        iterator &operator++(){ it++; return *this; }
-        iterator &operator++(int){ it++; return *this; }
-        iterator &operator--(){ it--; return *this; }
-        iterator &operator--(int){ it--; return *this; }
-        QString operator*() const{ return **it; }
-
         friend iterator Text::begin() const;
         friend iterator Text::end() const;
     };
