@@ -5,7 +5,7 @@ QT_INCLUDE = -DQT_SHARED -I/opt/qt4/include -I/opt/qt4/include/QtCore
 QT_LIBS = -lQtCore -L/opt/qt4/lib/ -lz -lm -pthread -lgthread-2.0 -lrt \
           -lglib-2.0 -lpthread -ldl
 
-all: text.o snippet.o hunk.o
+all: text.o snippet.o hunk.o file.o
 
 %.o: %.cpp %.h
 	$(CC) $(CXXFLAGS) $(DEBUGFLAGS) $(QT_INCLUDE) -c -o $@ $< 	

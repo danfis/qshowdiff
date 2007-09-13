@@ -34,4 +34,5 @@ void Hunk::_free()
     for(;it != it_end; it++){
         delete *it;
     }
+	_snippets.clear();
 }

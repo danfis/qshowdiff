@@ -66,6 +66,7 @@ void Text::free()
     for(;it != it_end; it++){
         delete *it;
     }
+	_text.clear();
 }
 
 void Text::copy(const Text &t)
