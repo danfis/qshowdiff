@@ -1,5 +1,5 @@
 #include <cppu.h>
-#include "../hunk.h"
+#include "hunk.h"
 
 
 TEST_CASE(TestCaseHunk);

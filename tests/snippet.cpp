@@ -1,6 +1,6 @@
 #include <cppu.h>
 #include <QString>
-#include "../snippet.h"
+#include "snippet.h"
 
 
 TEST_CASE(TestCaseSnippet);

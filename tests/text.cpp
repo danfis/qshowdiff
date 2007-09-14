@@ -2,7 +2,7 @@
 #include <iostream>
 using namespace std;
 
-#include "../text.h"
+#include "text.h"
 
 TEST_CASE(TestCaseText);
 
