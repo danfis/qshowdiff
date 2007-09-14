@@ -1,4 +1,7 @@
 *.o
 tests/*.o
 tests/test
+qshowdiff
+doc/*.png
+*~
 
