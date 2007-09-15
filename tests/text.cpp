@@ -43,40 +43,11 @@ void testOperators()
 	assertTrue(t != t3);
 }
 
-void testIterator()
-{
-	QString comp1;
-	QString comp2;
-	comp1.append("Line1");
-	comp1.append("Line2");
-	comp1.append("Line3");
-	comp1.append("Line4");
-	
-	Text::iterator it = t.begin();
-	Text::iterator it_end = t.end();
-
-	for (;it != it_end; it++){
-		comp2.append(*it);
-	}
-	assertTrue(comp1 == comp2);
-
-	it = t.begin();
-	assertTrue(it++ == ++it);
-	it++;
-	assertTrue(it-- == --it);
-	it_end = it;
-	assertTrue(it == it_end);
-
-    it = t.begin();
-    Text::iterator it2(it);
-    assertTrue(it2 == it);
-}
 
 TESTS{
 	REG_TEST(testAdd);
 	REG_TEST(testConstruct);
 	REG_TEST(testOperators);
-	REG_TEST(testIterator);
 }
 TEST_CASE_END;
 

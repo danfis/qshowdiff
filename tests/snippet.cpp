@@ -50,11 +50,13 @@ void testOperators()
     Context context2 = context;
     assertEquals(context.original(), context2.original());
     assertEquals(context.modified(), context2.modified());
+    assertEquals(context, context2);
 
     Added added(new Text(text));
     Added added2 = added;
     assertEquals(added.original(), added2.original());
     assertEquals(added.modified(), added2.modified());
+    assertEquals(added, context);
 }
 
 TESTS{

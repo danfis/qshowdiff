@@ -6,35 +6,10 @@
 
 #include "utils.h"
 
-class Text{
-  private:
-    std::vector<QString *> _text;
-
-    void free();
-    void copy(const Text &);
-
+class Text : public VectorOfPointers<QString>{
   public:
-    class iterator; // front declaration
-
-    Text(){}
-    Text(const Text &t);
-    ~Text();
-
-    Text &operator=(const Text &);
-    bool operator==(const Text &t) const;
-    bool operator!=(const Text &t) const { return !(*this == t); }
-
-    void addLine(QString *);
-    int numLines() const { return _text.size(); }
-
-    iterator begin() const;
-    iterator end() const;
-
-    class iterator : public VectorPointerIterator<QString>{
-      public:
-        friend iterator Text::begin() const;
-        friend iterator Text::end() const;
-    };
+    void addLine(QString *qs){ VectorOfPointers<QString>::_add(qs);}
+    int numLines() const { return VectorOfPointers<QString>::_size(); }
 };
 
 #endif

@@ -35,7 +35,9 @@ class Snippet{
     Text *_original;
     Text *_modified;
 
-    void _free(){ if (_modified != _original){delete _original;} delete _modified;}
+    void _copy(const Snippet &);
+    void _free(){ if (_modified != _original){delete _original;}
+                  delete _modified;}
 
     Snippet();
 
@@ -43,10 +45,15 @@ class Snippet{
     Snippet(Text *text) : _original(text), _modified(text){}
     Snippet(Text *original, Text *modified) : _original(original),
             _modified(modified){}
-    Snippet(const Snippet &s) : _original(new Text(*s._original)),
-            _modified(new Text(*s._modified)){}
+    Snippet(const Snippet &s){ _copy(s); }
     virtual ~Snippet(){ _free();}
-    virtual Snippet &operator=(const Snippet &s);
+    virtual Snippet &operator=(const Snippet &s){_free();_copy(s);return *this;}
+    
+    virtual bool operator==(const Snippet &s) const
+        { return (*_original == *(s._original) &&
+                  *_modified == *(s._modified) &&
+                  (_original == _modified) == (s._original == s._modified));}
+    virtual bool operator!=(const Snippet &s) const{ return !(*this == s); }
 
     /**
      * Returns text from original file.

@@ -29,31 +29,15 @@ void testConstructors()
 
     assertEquals(hunk.originalBeginsAt(), hunk2.originalBeginsAt());
     assertEquals(hunk.modifiedBeginsAt(), hunk3.modifiedBeginsAt());
-}
+    assertEquals(hunk.originalBeginsAt(), hunk3.originalBeginsAt());
 
-void testIterators()
-{
-    Hunk hunk(100,120);
-
-    hunk.addSnippet(new Context(new Text(text)));
-    hunk.addSnippet(new Added(new Text(text2)));
-    hunk.addSnippet(new Changed(new Text(text), new Text(text2)));
-
-    Hunk::iterator it = hunk.begin();
-    Hunk::iterator it_end = hunk.end();
-    assertEquals((*it).original(), Context(new Text(text)).original());
-    assertEquals((*it).modified(), Context(new Text(text)).modified());
-
-    it++;
-    it++;
-    assertEquals((*it).original(), Changed(new Text(text), new Text(text2)).original());
-    assertEquals((*it).modified(), Changed(new Text(text), new Text(text2)).modified());
-
-    assertEquals(hunk.numSnippets(), 3);
+    assertEquals(hunk, hunk2);
+    assertEquals(hunk, hunk3);
+    Hunk hunk4(105, 100);
+    assertNotEquals(hunk, hunk4);
 }
 
 TESTS{
     REG_TEST(testConstructors);
-    REG_TEST(testIterators);
 }
 TEST_CASE_END;
