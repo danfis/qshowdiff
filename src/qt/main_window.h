@@ -2,9 +2,10 @@
 #define _MAIN_WINDOW_H_
 
 #include <QMainWindow>
+#include "../diff/diff.h"
 
 class MainWindow : public QMainWindow{
   public:
-    MainWindow();
+    MainWindow(Diff *);
 };
 #endif

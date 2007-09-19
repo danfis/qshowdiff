@@ -83,6 +83,9 @@ class VectorOfPointers{
      */
     int _size() const { return _list.size(); }
 
+    list_iterator_t _begin() const { return _list.begin();}
+    list_iterator_t _end() const { return _list.end();}
+
   public:
     VectorOfPointers(){}
     VectorOfPointers(const VectorOfPointers<Type> &cl){ _copy(cl); }

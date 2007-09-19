@@ -1,6 +1,7 @@
 #ifndef _SNIPPET_H_
 #define _SNIPPET_H_
 
+#include "../settings.h"
 #include "text.h"
 
 /**
@@ -31,7 +32,7 @@
  * redefine original() and modified() methods if necessary.
  */
 class Snippet{
-  private:
+  protected:
     Text *_original;
     Text *_modified;
 
@@ -64,6 +65,12 @@ class Snippet{
      * Returns text from modified file.
      */
     virtual Text modified() const{ return *_modified;}
+
+
+    virtual int paintOriginal(QPainter &painter, int offset) const;
+    //virtual int paintModified(QPainter &painter, int offset) const;
+    virtual QColor &getBackgroundColor() const
+        { return Settings::Text::background_color; }
 };
 
 class Context : public Snippet{
@@ -78,8 +85,10 @@ class Added : public Snippet{
   private:
     Added(Text *t, Text *tt) : Snippet(t,tt){}
   public:
-    Added(Text *t) : Snippet(t){}
+    Added(Text *t) : Snippet(t){ _original = new Text();}
     Text original() const{ return Text();}
+    QColor &getBackgroundColor() const
+        { return Settings::Text::background_color_added;}
 };
 
 
@@ -87,7 +96,7 @@ class Deleted : public Snippet{
   private:
     Deleted(Text *t, Text *tt) : Snippet(t,tt){}
   public:
-    Deleted(Text *t) : Snippet(t){}
+    Deleted(Text *t) : Snippet(t){ _modified = new Text(); }
     Text modified() const{ return Text();}
 };
 

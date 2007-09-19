@@ -3,10 +3,11 @@
 
 #include <QWidget>
 #include <QSplitter>
+#include "../diff/diff.h"
 
 class DiffViewFrame : public QWidget{
   public:
-	DiffViewFrame(QWidget *parent = 0);
+	DiffViewFrame(Diff *, QWidget *parent = 0);
 };
 
 

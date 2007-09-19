@@ -1,13 +1,16 @@
 #include <QApplication>
 
-#include "diff/file.h"
+#include "diff/diff.h"
 #include "diff/text.h"
 #include "qt/main_window.h"
+#include "settings.h"
 
 
-File *createFile()
+Diff *createDiff()
 {
+    Diff *diff = new Diff();
     File *file = new File("filename");
+    File *file2 = new File("filename2");
     Hunk *h1 = new Hunk(100, 105);
     Hunk *h2 = new Hunk(150, 155);
     Hunk *h3 = new Hunk(250, 255);
@@ -43,21 +46,28 @@ File *createFile()
     file->addHunk(h2);
     file->addHunk(h3);
 
+    file2->addHunk(new Hunk(*h1));
+    file2->addHunk(new Hunk(*h2));
+    file2->addHunk(new Hunk(*h3));
+
+    diff->addFile(file);
+    diff->addFile(file2);
     delete t1;
     delete t2;
     delete t3;
     delete t4;
 
-    return file;
+    return diff;
 }
 
 int main(int argc, char *argv[])
 {
-    File *file = createFile();
+    Diff *diff = createDiff();
 
 	QApplication app(argc, argv);
-	MainWindow win;
+
+	MainWindow win(diff);
 	win.show();
 	app.exec();
-    delete file;
+    delete diff;
 }

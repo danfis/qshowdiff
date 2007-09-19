@@ -2,6 +2,7 @@
 #define _FILE_H_
 
 #include <QString>
+#include <QPainter>
 #include <vector>
 #include "hunk.h"
 
@@ -10,6 +11,8 @@ class File : public VectorOfPointers<Hunk>{
     QString _filename;
 
     void _copy(const File &f){ _filename = f._filename; }
+
+    int _paintHeader(QPainter &original, int offset) const;
   public:
     File(const char *filename) : _filename(filename){}
     File(const QString &filename) : _filename(filename){}
@@ -19,5 +22,8 @@ class File : public VectorOfPointers<Hunk>{
 
     void addHunk(Hunk *h){ VectorOfPointers<Hunk>::_add(h);}
     int numHunks() const { return VectorOfPointers<Hunk>::_size();}
+
+    int paintOriginal(QPainter &original, int offset) const;
+    int paintModified(QPainter &original, int offset) const;
 };
 #endif
