@@ -1,49 +1,62 @@
-#include <QGridLayout>
+#include <QVBoxLayout>
 #include <QScrollBar>
 #include <QPainter>
+#include <QScrollArea>
 
+#include "../debug.h"
 #include "diff_view.h"
 
-DiffViewFrame::DiffViewFrame(Diff *diff, QWidget *parent) : QWidget(parent)
+DiffViewFrame::DiffViewFrame(QWidget *parent) : QWidget(parent)
 {
-	QGridLayout *layout = new QGridLayout();
+	QVBoxLayout *layout = new QVBoxLayout();
     QSplitter *splitter = new QSplitter(Qt::Horizontal);
-    QScrollBar *bottom_scroll_bar = new QScrollBar(Qt::Horizontal);
-    QScrollBar *left_scroll_bar = new QScrollBar(Qt::Vertical);
+    DiffView *original = new DiffView(true);
+    DiffView *modified = new DiffView(false);
+    QScrollArea *orig = new QScrollArea();
+    QScrollArea *modif = new QScrollArea();
 
-    Diff::DiffWidgetPair pair = diff->getWidgets();
+    
+    orig->setWidget(original);
+    orig->setWidgetResizable(true);
+    orig->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    modif->setWidget(modified);
+    modif->setWidgetResizable(true);
 
-    splitter->addWidget(pair.first);
-    splitter->addWidget(pair.second);
+    splitter->addWidget(orig);
+    splitter->addWidget(modif);
 
-    layout->addWidget(splitter, 0, 0);
-    layout->addWidget(bottom_scroll_bar, 1, 0);
-    layout->addWidget(left_scroll_bar, 0, 1);
+    layout->addWidget(splitter);
 
 	setLayout(layout);
-}
 
 
+    QScrollBar *orig_vertical = orig->verticalScrollBar();
+    QScrollBar *modif_vertical = modif->verticalScrollBar();
+    QScrollBar *orig_horizontal = orig->horizontalScrollBar();
+    QScrollBar *modif_horizontal = modif->horizontalScrollBar();
 
-/* DiffViewSplitter */
-DiffViewSplitter::DiffViewSplitter(Qt::Orientation orientation, QWidget *parent) :
-        QSplitter(orientation, parent)
-{
-    DiffView *left = new DiffView();
-    DiffView *right = new DiffView();
-
-    addWidget(left);
-    addWidget(right);
+    connect(orig_vertical, SIGNAL(valueChanged(int)), modif_vertical,
+            SLOT(setValue(int)));
+    connect(modif_vertical, SIGNAL(valueChanged(int)), orig_vertical,
+            SLOT(setValue(int)));
+    connect(orig_horizontal, SIGNAL(valueChanged(int)), modif_horizontal,
+            SLOT(setValue(int)));
+    connect(modif_horizontal, SIGNAL(valueChanged(int)), orig_horizontal,
+            SLOT(setValue(int)));
 }
 
 
 /* DiffView */
-DiffView::DiffView(QWidget *parent) : QWidget(parent)
-{
-}
-
 void DiffView::paintEvent(QPaintEvent *e)
 {
+    int height;
     QPainter painter(this);
-    painter.drawText(10, 10, "asdfasdf");
+    if (_original){
+        height = Diff::instance()->paintOriginal(painter);
+    }else{
+        height = Diff::instance()->paintModified(painter);
+    }
+
+    setFixedHeight(height);
+    setMinimumWidth(Settings::max_line_width);
 }

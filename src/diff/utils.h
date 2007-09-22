@@ -2,6 +2,9 @@
 #define _UTILS_H_
 
 #include <vector>
+#include <utility>
+
+typedef std::pair<int, int> height_width_t;
 
 /**
  * Iterator for vectors containing pointers to Type.

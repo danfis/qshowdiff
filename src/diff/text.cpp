@@ -3,7 +3,10 @@
 
 int Text::paint(QPainter &painter, int offset, int lines, int from_line) const
 {
-    int height = QFontMetrics(Settings::Text::font).height();
+    int max_width = 0;
+
+    QFontMetrics metrics = QFontMetrics(Settings::Text::font);
+    int height = metrics.height();
 
     QRect line_rect(0, offset, Settings::Text::line_column_width, height);
     QRect text_rect(Settings::Text::line_column_width +
@@ -25,12 +28,16 @@ int Text::paint(QPainter &painter, int offset, int lines, int from_line) const
         line_rect.moveTo(line_rect.x(), line_rect.y() + height);
         from_line++;
 
+        max_width = std::max(max_width, metrics.width(**it));
+        text_rect.setWidth(max_width);
         painter.drawText(text_rect, Qt::AlignLeft, **it);
         text_rect.moveTo(text_rect.x(), text_rect.y() + height);
         offset += height;
     }
     if (line < lines)
         offset += height*(lines-line);
+
+    Settings::max_line_width = std::max(Settings::max_line_width, max_width);
 
     return offset;
 }

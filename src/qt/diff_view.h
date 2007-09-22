@@ -3,23 +3,21 @@
 
 #include <QWidget>
 #include <QSplitter>
+#include <QScrollArea>
 #include "../diff/diff.h"
 
 class DiffViewFrame : public QWidget{
   public:
-	DiffViewFrame(Diff *, QWidget *parent = 0);
+	DiffViewFrame(QWidget *parent = 0);
 };
-
-
-class DiffViewSplitter : public QSplitter{
-  public:
-    DiffViewSplitter(Qt::Orientation orientation, QWidget *parent = 0);
-};
-
 
 class DiffView : public QWidget{
+  private:
+    bool _original;
+
   public:
-    DiffView(QWidget *parent = 0);
+    DiffView(bool original, QWidget *parent = 0) : QWidget(parent),
+        _original(original) {}
     void paintEvent(QPaintEvent *e);
 };
 #endif

@@ -6,9 +6,9 @@
 #include "settings.h"
 
 
-Diff *createDiff()
+void createDiff()
 {
-    Diff *diff = new Diff();
+    Diff *diff = Diff::instance();
     File *file = new File("filename");
     File *file2 = new File("filename2");
     Hunk *h1 = new Hunk(100, 105);
@@ -19,7 +19,10 @@ Diff *createDiff()
     Text *t3 = new Text();
     Text *t4 = new Text();
 
-    t1->addLine(new QString("Line1"));
+    t1->addLine(new QString("Line1 asdlkjf halsjdlfkjahlsdhf laj dsljfh\
+                lasjd hflakf jk ahlds jhflaksdkjfa hlsjf hlak dhflkjadslf\
+                askjd fl sadfl asld fald sfhlkja sdljfh asd fhalkdjsfhlksa\
+                df"));
     t1->addLine(new QString("Line2"));
     t1->addLine(new QString("Line3"));
     t2->addLine(new QString("LLine3"));
@@ -56,18 +59,15 @@ Diff *createDiff()
     delete t2;
     delete t3;
     delete t4;
-
-    return diff;
 }
 
 int main(int argc, char *argv[])
 {
-    Diff *diff = createDiff();
+    createDiff();
 
 	QApplication app(argc, argv);
 
-	MainWindow win(diff);
+	MainWindow win;
 	win.show();
 	app.exec();
-    delete diff;
 }

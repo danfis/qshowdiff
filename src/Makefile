@@ -34,8 +34,14 @@ objs/%.o: %.cpp %.h
 objs/%.o: %.cpp
 	$(CC) $(ALL_FLAGS) -c -o $@ $<
 	
+#qt/diff_view.cpp: qt/diff_view.moc
+#qt/diff_view.moc: qt/diff_view.h
+#	moc -p'.' $< > $@
+
 clean:
 	rm -f objs/*.o
 	rm -f $(TARGETS)
+	rm -f *.moc
+	rm -f */*.moc
 
 .PHONY: all clean

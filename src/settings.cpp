@@ -1,5 +1,7 @@
 #include "settings.h"
 
+int Settings::max_line_width = 0;
+
 QFont Settings::File::font = QFont("DejaVu Sans");
 QColor Settings::File::font_color = QColor(0,0,0);
 QColor Settings::File::background_color = QColor(100,100,100);

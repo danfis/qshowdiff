@@ -6,6 +6,6 @@
 
 class MainWindow : public QMainWindow{
   public:
-    MainWindow(Diff *);
+    MainWindow();
 };
 #endif

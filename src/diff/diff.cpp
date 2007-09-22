@@ -1,15 +1,7 @@
 #include <QPainter>
 #include "diff.h"
-using std::pair;
 
-Diff::DiffWidgetPair Diff::getWidgets() const
-{
-    Diff::DiffWidgetOriginal *original = new DiffWidgetOriginal(this);
-    Diff::DiffWidgetModified *modified = new DiffWidgetModified(this);
-    return Diff::DiffWidgetPair(original, modified);
-}
-
-void Diff::paintOriginal(QPainter &painter) const
+int Diff::paintOriginal(QPainter &painter) const
 {
     VectorOfPointers<File>::list_iterator_t it =
         VectorOfPointers<File>::_begin();
@@ -19,9 +11,11 @@ void Diff::paintOriginal(QPainter &painter) const
     for (;it != it_end; it++){
         offset = (*it)->paintOriginal(painter, offset);
     }
+
+    return offset;
 }
 
-void Diff::paintModified(QPainter &painter) const
+int Diff::paintModified(QPainter &painter) const
 {
     VectorOfPointers<File>::list_iterator_t it =
         VectorOfPointers<File>::_begin();
@@ -31,4 +25,10 @@ void Diff::paintModified(QPainter &painter) const
     for (;it != it_end; it++){
         offset = (*it)->paintModified(painter, offset);
     }
+    
+    return offset;
 }
+
+// static member
+Diff Diff::diff;
+

@@ -7,6 +7,8 @@
 #include "debug.h"
 
 struct Settings{
+    static int max_line_width;
+
     struct File{
         static QFont font;
         static QColor font_color;
