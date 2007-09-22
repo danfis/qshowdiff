@@ -40,6 +40,13 @@ class Snippet{
     void _free(){ if (_modified != _original){delete _original;}
                   delete _modified;}
 
+    /**
+     * Paint text by painter on offset (from beginning). from_line is
+     * number of line, where text begin.
+     */
+    virtual int _paint(Text *text, QPainter &painter, int offset,
+                       int from_line) const;
+
     Snippet();
 
   public:
@@ -67,10 +74,17 @@ class Snippet{
     virtual Text modified() const{ return *_modified;}
 
 
-    virtual int paintOriginal(QPainter &painter, int offset) const;
-    //virtual int paintModified(QPainter &painter, int offset) const;
+    virtual int paintOriginal(QPainter &painter, int offset, int from_line) const
+        { return _paint(_original, painter, offset, from_line); }
+    virtual int paintModified(QPainter &painter, int offset, int from_line) const
+        { return _paint(_modified, painter, offset, from_line); }
     virtual QColor &getBackgroundColor() const
         { return Settings::Text::background_color; }
+
+    virtual int numOriginalLines() const { return _original->numLines(); }
+    virtual int numModifiedLines() const { return _modified->numLines(); }
+    virtual int numLines() const { return numOriginalLines() >
+        numModifiedLines() ? numOriginalLines() : numModifiedLines(); }
 };
 
 class Context : public Snippet{
@@ -98,6 +112,8 @@ class Deleted : public Snippet{
   public:
     Deleted(Text *t) : Snippet(t){ _modified = new Text(); }
     Text modified() const{ return Text();}
+    QColor &getBackgroundColor() const
+        { return Settings::Text::background_color_deleted;}
 };
 
 class Changed : public Snippet{
@@ -105,6 +121,8 @@ class Changed : public Snippet{
     Changed(Text *t) : Snippet(t){}
   public:
     Changed(Text *t, Text *t2) : Snippet(t,t2){}
+    QColor &getBackgroundColor() const
+        { return Settings::Text::background_color_changed;}
 };
 #endif
 /* vim: set sw=4 ts=4 et ft=cpp : */

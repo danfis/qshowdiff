@@ -11,22 +11,26 @@ struct Settings{
         static QFont font;
         static QColor font_color;
         static QColor background_color;
-        static int indentation;
+        static int box_height;
+        static int text_left_indentation;
     };
 
     struct Hunk{
-        static QFont font;
-        static QColor font_color;
-        static QColor background_color;
-        static int indentation;
+        static int separator_height;
+        static QColor separator_color;
     };
 
     struct Text{
         static QFont font;
         static QColor font_color;
+
         static QColor background_color;
         static QColor background_color_added;
-        static QColor baseline_color;
+        static QColor background_color_deleted;
+        static QColor background_color_changed;
+
+        static int line_column_width;
+        static int line_indentation;
     };
 };
 #endif

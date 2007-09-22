@@ -12,7 +12,7 @@ class Text : public VectorOfPointers<QString>{
     void addLine(QString *qs){ VectorOfPointers<QString>::_add(qs);}
     int numLines() const { return VectorOfPointers<QString>::_size(); }
 
-    int paint(QPainter &painter, int offset, int lines) const;
+    int paint(QPainter &painter, int offset, int lines, int from_line) const;
 };
 
 #endif
