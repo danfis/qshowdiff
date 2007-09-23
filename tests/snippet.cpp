@@ -56,7 +56,7 @@ void testOperators()
     Added added2 = added;
     assertEquals(added.original(), added2.original());
     assertEquals(added.modified(), added2.modified());
-    assertEquals(added, context);
+    assertNotEquals(added, context);
 }
 
 TESTS{

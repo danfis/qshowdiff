@@ -12,8 +12,9 @@ ALL_LD_FLAGS = $(QT_LIBS)
 ALL_FLAGS += -I../src/diff
 ALL_LD_FLAGS += -lcppu
 
-TEST_SUITES = text.cpp snippet.cpp hunk.cpp
-OBJS = ../src/diff/snippet.o
+TEST_SUITES = text.cpp snippet.cpp hunk.cpp diff.cpp
+OBJS_LIST = snippet.o settings.o text.o hunk.o diff.o file.o
+OBJS = $(foreach file, $(OBJS_LIST), ../src/objs/$(file))
 
 all: run_tests
 run_tests: test
@@ -24,7 +25,7 @@ run_tests: test
 	-valgrind --leak-check=full --show-reachable=yes ./test
 
 test: main.cpp $(TEST_SUITES)
-	$(CC) $(ALL_FLAGS) -o $@ $< $(OBJS) $(ALL_LD_FLAGS)
+	pwd && $(CC) $(ALL_FLAGS) -o $@ $< $(OBJS) $(ALL_LD_FLAGS)
 
 clean:
 	rm -f test
