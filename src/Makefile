@@ -14,14 +14,15 @@ ALL_FLAGS = $(CXXFLAGS) $(DEBUGFLAGS) $(QT_INCLUDE)
 ALL_LD_FLAGS = $(QT_LIBS)
 
 
-VPATH = diff qt
+VPATH = diff qt parser
 
 TARGETS = qshowdiff
 
 DIFF_OBJS = snippet.o diff.o file.o hunk.o text.o
 QT_OBJS = diff_view.o main_window.o
+PARSER_OBJS = parser.o
 
-OBJS_TMP = main.o settings.o $(DIFF_OBJS) $(QT_OBJS)
+OBJS_TMP = main.o settings.o $(DIFF_OBJS) $(QT_OBJS) $(PARSER_OBJS)
 OBJS = $(foreach file, $(OBJS_TMP), objs/$(file))
 
 all: $(TARGETS)
