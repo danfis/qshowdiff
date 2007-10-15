@@ -1,5 +1,5 @@
 CC = g++
-CXXFLAGS = -Wall -Wno-long-long -pedantic
+CXXFLAGS = -Wall -Wno-long-long -pedantic -O2
 DEBUGFLAGS = -g
 QT_INCLUDE = -DQT_SHARED -I/opt/qt4/include -I/opt/qt4/include/QtCore \
 			 -I/opt/qt4/include/QtGui

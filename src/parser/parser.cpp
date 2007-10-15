@@ -85,6 +85,8 @@ void Parser::_start()
 
 void Parser::_file()
 {
+    _finishHunk();
+
     if (_current_token == Tokens::FILE_TOK){
         _createNewFile();
         _readNextLine();
@@ -247,6 +249,11 @@ void Parser::_end()
 void Parser::_readNextLine()
 {
     _current_line = _in->readLine();
+    if (_current_line.isNull()){
+        _changeState(END_STATE);
+        return;
+    }
+
     _current_token = _tokens->match(_current_line);
     DBG("Read line \"" << _current_line.toStdString() << "\"");
 }
@@ -308,8 +315,10 @@ QString Parser::_capCurrentLine(int cap)
 
 void Parser::_createNewFile()
 {
-    if (_cur_file != NULL)
+    if (_cur_file != NULL){
+        DBG("Can't create new file - _cur_file = " << (long)_cur_file);
         return;
+    }
 
     Diff::instance()->addFile(_cur_file = new File(_capCurrentLine(1)));
 }
@@ -320,8 +329,11 @@ void Parser::_finishFile()
 
 void Parser::_createNewHunk()
 {
-    if (_cur_file == NULL || _cur_hunk != NULL)
+    if (_cur_file == NULL || _cur_hunk != NULL){
+        DBG("Can't create new hunk - _cur_hunk = " << (long)_cur_hunk
+                << ", _cur_file = " << (long)_cur_file);
         return;
+    }
 
     int from1, from2;
     from1 = _capCurrentLine(1).toInt();
