@@ -68,10 +68,10 @@ void Parser::parse()
                 _changed();
                 break;
             case END_STATE:
-                _end();
                 break;
         }
     }
+    _end();
 }
 
 void Parser::_start()
