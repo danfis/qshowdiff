@@ -19,6 +19,8 @@ MainWindow::MainWindow()
         top->insertItem(i+1, new QListWidgetItem(Diff::instance()->getFile(i)));
     }
 
+    top->setCurrentRow(0);
+
     splitter->addWidget(top);
     splitter->addWidget(bottom);
     splitter->setStretchFactor(0,1);
