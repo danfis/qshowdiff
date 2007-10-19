@@ -25,8 +25,13 @@ class Diff : public VectorOfPointers<File>{
 
     void addFile(File *f){ VectorOfPointers<File>::_add(f); }
     int numFiles() const { return VectorOfPointers<File>::_size(); }
+    QString getFile(int pos) const
+        { return VectorOfPointers<File>::_get(pos)->getFilename(); }
+
     int paintOriginal(QPainter &) const;
     int paintModified(QPainter &) const;
+    int paintOriginal(int pos, QPainter &) const;
+    int paintModified(int pos, QPainter &) const;
 };
 
 #endif

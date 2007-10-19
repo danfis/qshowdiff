@@ -86,6 +86,11 @@ class VectorOfPointers{
      */
     int _size() const { return _list.size(); }
 
+    /**
+     * Returns Type* at position pos in _list.
+     */
+    Type *_get(int pos) const { return _list[pos]; }
+
     list_iterator_t _begin() const { return _list.begin();}
     list_iterator_t _end() const { return _list.end();}
 

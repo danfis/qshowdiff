@@ -23,6 +23,11 @@ class File : public VectorOfPointers<Hunk>{
     void addHunk(Hunk *h){ VectorOfPointers<Hunk>::_add(h);}
     int numHunks() const { return VectorOfPointers<Hunk>::_size();}
 
+    /**
+     * Return filename.
+     */
+    QString getFilename() const { return _filename; }
+
     int paintOriginal(QPainter &original, int offset) const;
     int paintModified(QPainter &original, int offset) const;
 };

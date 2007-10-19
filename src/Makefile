@@ -1,4 +1,6 @@
 CC = g++
+MOC = /opt/qt4/bin/moc
+
 CXXFLAGS = -Wall -Wno-long-long -pedantic -O2
 DEBUGFLAGS = -g
 QT_INCLUDE = -DQT_SHARED -I/opt/qt4/include -I/opt/qt4/include/QtCore \
@@ -35,9 +37,9 @@ objs/%.o: %.cpp %.h
 objs/%.o: %.cpp
 	$(CC) $(ALL_FLAGS) -c -o $@ $<
 	
-#qt/diff_view.cpp: qt/diff_view.moc
-#qt/diff_view.moc: qt/diff_view.h
-#	moc -p'.' $< > $@
+qt/diff_view.cpp: qt/diff_view.moc
+qt/diff_view.moc: qt/diff_view.h
+	$(MOC) -p'.' $< > $@
 
 clean:
 	rm -f objs/*.o

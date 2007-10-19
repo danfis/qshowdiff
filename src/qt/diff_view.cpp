@@ -5,21 +5,22 @@
 
 #include "../debug.h"
 #include "diff_view.h"
+#include "diff_view.moc"
 
 DiffViewFrame::DiffViewFrame(QWidget *parent) : QWidget(parent)
 {
 	QVBoxLayout *layout = new QVBoxLayout();
     QSplitter *splitter = new QSplitter(Qt::Horizontal);
-    DiffView *original = new DiffView(true);
-    DiffView *modified = new DiffView(false);
+    _original = new DiffView(true);
+    _modified = new DiffView(false);
     QScrollArea *orig = new QScrollArea();
     QScrollArea *modif = new QScrollArea();
 
     
-    orig->setWidget(original);
+    orig->setWidget(_original);
     orig->setWidgetResizable(true);
     orig->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    modif->setWidget(modified);
+    modif->setWidget(_modified);
     modif->setWidgetResizable(true);
 
     splitter->addWidget(orig);
@@ -45,6 +46,14 @@ DiffViewFrame::DiffViewFrame(QWidget *parent) : QWidget(parent)
             SLOT(setValue(int)));
 }
 
+void DiffViewFrame::changeFile(int num) const
+{
+    if (num != -1){
+        // num - 1 is there because num==0 is for 'All files'
+        _original->setCurrentFile(num - 1);
+        _modified->setCurrentFile(num - 1);
+    }
+}
 
 /* DiffView */
 void DiffView::paintEvent(QPaintEvent *e)
@@ -52,11 +61,23 @@ void DiffView::paintEvent(QPaintEvent *e)
     int height;
     QPainter painter(this);
     if (_original){
-        height = Diff::instance()->paintOriginal(painter);
+        if (_current_file == -1)
+            height = Diff::instance()->paintOriginal(painter);
+        else
+            height = Diff::instance()->paintOriginal(_current_file, painter);
     }else{
-        height = Diff::instance()->paintModified(painter);
+        if (_current_file == -1)
+            height = Diff::instance()->paintModified(painter);
+        else
+            height = Diff::instance()->paintModified(_current_file, painter);
     }
 
     setFixedHeight(height);
     setMinimumWidth(Settings::max_line_width);
+}
+
+void DiffView::setCurrentFile(int num)
+{
+    _current_file = num;
+    repaint();
 }

@@ -29,6 +29,17 @@ int Diff::paintModified(QPainter &painter) const
     return offset;
 }
 
+
+int Diff::paintOriginal(int pos, QPainter &painter) const
+{
+    return VectorOfPointers<File>::_get(pos)->paintOriginal(painter, 0);
+}
+
+int Diff::paintModified(int pos, QPainter &painter) const
+{
+    return VectorOfPointers<File>::_get(pos)->paintModified(painter, 0);
+}
+
 // static member
 Diff Diff::diff;
 
