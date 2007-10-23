@@ -3,6 +3,13 @@
 
 int Text::paint(QPainter &painter, int offset, int lines, int from_line) const
 {
+    list_of_ranges_t ranges;
+    return paint(painter, offset, lines, from_line, ranges);
+}
+
+int Text::paint(QPainter &painter, int offset, int lines, int from_line,
+        const list_of_ranges_t &ranges) const
+{
     int max_width = 0;
 
     QFontMetrics metrics = QFontMetrics(Settings::Text::font);

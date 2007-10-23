@@ -1,7 +1,8 @@
 CC = g++
 MOC = /opt/qt4/bin/moc
 
-CXXFLAGS = -Wall -Wno-long-long -pedantic -O2
+CXXFLAGS = -Wall -Wno-long-long -pedantic \
+		   -march=k8 -mtune=k8 -msse2 -O2 -pipe
 DEBUGFLAGS = -g
 QT_INCLUDE = -DQT_SHARED -I/opt/qt4/include -I/opt/qt4/include/QtCore \
 			 -I/opt/qt4/include/QtGui
@@ -20,7 +21,8 @@ VPATH = diff qt parser
 
 TARGETS = qshowdiff
 
-DIFF_OBJS = snippet.o diff.o file.o hunk.o text.o
+DIFF_OBJS = snippet.o diff.o file.o hunk.o text.o \
+			levenshtein_table.o levenshtein_distances.o
 QT_OBJS = diff_view.o main_window.o
 PARSER_OBJS = parser.o
 

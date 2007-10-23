@@ -3,6 +3,7 @@
 
 #include "../settings.h"
 #include "text.h"
+#include "levenshtein_distances.h"
 
 /**
  * Example how diff will be parsed to Snippets:
@@ -23,6 +24,10 @@
  *
  */
 
+//TODO: Create Levenshtein distance class for Changed class.
+//      Levenshtein distance must be computed during creating a class, not
+//      during printing!
+
 /**
  * Base class for Context, Added, Deleted and Changed classes.
  * This class represents snippet of text of original and modified file.
@@ -36,9 +41,10 @@ class Snippet{
     Text *_original;
     Text *_modified;
 
+    LevenshteinDistances *_levenshtein;
+
     void _copy(const Snippet &);
-    void _free(){ if (_modified != _original){delete _original;}
-                  delete _modified;}
+    void _free();
 
     /**
      * Paint text by painter on offset (from beginning). from_line is
@@ -50,9 +56,11 @@ class Snippet{
     Snippet();
 
   public:
-    Snippet(Text *text) : _original(text), _modified(text){}
+    Snippet(Text *text) : _original(text), _modified(text),
+        _levenshtein(NULL){}
     Snippet(Text *original, Text *modified) : _original(original),
-            _modified(modified){}
+            _modified(modified)
+            { _levenshtein = new LevenshteinDistances(*original, *modified);}
     Snippet(const Snippet &s){ _copy(s); }
     virtual ~Snippet(){ _free();}
     virtual Snippet &operator=(const Snippet &s){_free();_copy(s);return *this;}
@@ -85,6 +93,11 @@ class Snippet{
     virtual int numModifiedLines() const { return _modified->numLines(); }
     virtual int numLines() const { return numOriginalLines() >
         numModifiedLines() ? numOriginalLines() : numModifiedLines(); }
+
+    virtual bool isContext() const { return false; }
+    virtual bool isAdded() const { return false; }
+    virtual bool isDeleted() const { return false; }
+    virtual bool isChanged() const { return false; }
 };
 
 class Context : public Snippet{
@@ -93,6 +106,7 @@ class Context : public Snippet{
   public:
     Context(Text *t) : Snippet(t){}
     Context(const Context &c) : Snippet(c){}
+    bool isContext() const { return true; }
 };
 
 class Added : public Snippet{
@@ -103,6 +117,7 @@ class Added : public Snippet{
     Text original() const{ return Text();}
     QColor &getBackgroundColor() const
         { return Settings::Text::background_color_added;}
+    bool isAdded() const { return true; }
 };
 
 
@@ -114,6 +129,7 @@ class Deleted : public Snippet{
     Text modified() const{ return Text();}
     QColor &getBackgroundColor() const
         { return Settings::Text::background_color_deleted;}
+    bool isDeleted() const { return true; }
 };
 
 class Changed : public Snippet{
@@ -123,6 +139,7 @@ class Changed : public Snippet{
     Changed(Text *t, Text *t2) : Snippet(t,t2){}
     QColor &getBackgroundColor() const
         { return Settings::Text::background_color_changed;}
+    bool isChanged() const { return true; }
 };
 #endif
 /* vim: set sw=4 ts=4 et ft=cpp : */

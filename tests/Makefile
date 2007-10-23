@@ -12,8 +12,8 @@ ALL_LD_FLAGS = $(QT_LIBS)
 ALL_FLAGS += -I../src/diff
 ALL_LD_FLAGS += -lcppu
 
-TEST_SUITES = text.cpp snippet.cpp hunk.cpp diff.cpp
-OBJS_LIST = snippet.o settings.o text.o hunk.o diff.o file.o
+TEST_SUITES = text.cpp snippet.cpp hunk.cpp diff.cpp levenshtein.cpp
+OBJS_LIST = snippet.o settings.o text.o hunk.o diff.o file.o levenshtein.o
 OBJS = $(foreach file, $(OBJS_LIST), ../src/objs/$(file))
 
 all: run_tests
