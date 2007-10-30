@@ -4,6 +4,7 @@
 #include <QScrollArea>
 
 #include "../debug.h"
+#include "../settings.h"
 #include "diff_view.h"
 #include "diff_view.moc"
 
@@ -204,8 +205,19 @@ void DiffView::_paintSnippetBackground(Snippet const *snippet)
 {
     int lines = snippet->numLines(); 
     int height = QFontMetrics(Settings::Text::font).height();
+    QColor color;
 
-    painter->setBrush(QBrush(snippet->getBackgroundColor()));
-    painter->setPen(snippet->getBackgroundColor());
+    if (snippet->isContext()){
+        color = Settings::Text::background_color;
+    }else if (snippet->isAdded()){
+        color = Settings::Text::background_color_added;
+    }else if (snippet->isDeleted()){
+        color = Settings::Text::background_color_deleted;
+    }else if (snippet->isChanged()){
+        color = Settings::Text::background_color_changed;
+    }
+
+    painter->setBrush(QBrush(color));
+    painter->setPen(color);
     painter->drawRect(0, offset, painter->window().width(), lines*height);
 }

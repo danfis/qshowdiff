@@ -20,7 +20,6 @@ class Hunk : public VectorOfPointers<Snippet>{
         { _original_from_line = h._original_from_line;
           _modified_from_line = h._modified_from_line; }
 
-    int _paintSeparator(QPainter &, int offset) const;
   public:
     Hunk(const int original_from, const int modified_from) :
         VectorOfPointers<Snippet>(),

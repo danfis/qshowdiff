@@ -1,7 +1,6 @@
 #ifndef _SNIPPET_H_
 #define _SNIPPET_H_
 
-#include "../settings.h"
 #include "text.h"
 #include "levenshtein_distances.h"
 
@@ -75,9 +74,6 @@ class Snippet{
     virtual const Text *getModified() const{ return _modified;}
 
 
-    virtual QColor &getBackgroundColor() const
-        { return Settings::Text::background_color; }
-
     virtual int numOriginalLines() const { return _original->numLines(); }
     virtual int numModifiedLines() const { return _modified->numLines(); }
     virtual int numLines() const { return numOriginalLines() >
@@ -103,8 +99,6 @@ class Added : public Snippet{
     Added(Text *t, Text *tt) : Snippet(t,tt){}
   public:
     Added(Text *t) : Snippet(t){ _original = new Text();}
-    QColor &getBackgroundColor() const
-        { return Settings::Text::background_color_added;}
     bool isAdded() const { return true; }
 };
 
@@ -114,8 +108,6 @@ class Deleted : public Snippet{
     Deleted(Text *t, Text *tt) : Snippet(t,tt){}
   public:
     Deleted(Text *t) : Snippet(t){ _modified = new Text(); }
-    QColor &getBackgroundColor() const
-        { return Settings::Text::background_color_deleted;}
     bool isDeleted() const { return true; }
 };
 
@@ -124,8 +116,6 @@ class Changed : public Snippet{
     Changed(Text *t) : Snippet(t){}
   public:
     Changed(Text *t, Text *t2) : Snippet(t,t2){}
-    QColor &getBackgroundColor() const
-        { return Settings::Text::background_color_changed;}
     bool isChanged() const { return true; }
 };
 #endif

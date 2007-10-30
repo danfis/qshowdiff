@@ -7,10 +7,6 @@
 #include "file.h"
 #include "../debug.h"
 
-typedef std::pair<QWidget *, QWidget *> diff_widgets_t;
-typedef std::vector<std::pair<QWidget *, QWidget *> >
-    list_of_diff_widgets_t;
-
 class Diff : public VectorOfPointers<File>{
   private:
     static Diff diff;

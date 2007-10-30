@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <QTextStream>
+#include <QRegExp>
 #include "../diff/diff.h"
 
 class Tokens{

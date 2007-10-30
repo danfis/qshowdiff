@@ -11,8 +11,6 @@ class File : public VectorOfPointers<Hunk>{
     QString _filename;
 
     void _copy(const File &f){ _filename = f._filename; }
-
-    int _paintHeader(QPainter &original, int offset) const;
   public:
     File(const char *filename) : _filename(filename){}
     File(const QString &filename) : _filename(filename){}
