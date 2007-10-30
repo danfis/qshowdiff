@@ -2,7 +2,6 @@
 #define _TEXT_H_
 
 #include <QString>
-#include <QPainter>
 #include <vector>
 
 #include "utils.h"
@@ -15,10 +14,6 @@ class Text : public VectorOfPointers<QString>{
 
     const QString &getLine(int num) const
         { return *(VectorOfPointers<QString>::_get(num)); }
-
-    int paint(QPainter &painter, int offset, int lines, int from_line) const;
-    int paint(QPainter &painter, int offset, int lines, int from_line,
-            const list_of_ranges_t &) const;
 };
 
 #endif

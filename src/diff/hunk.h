@@ -2,7 +2,6 @@
 #define _HUNK_H_
 
 #include <vector>
-#include <QPainter>
 
 #include "snippet.h"
 #include "utils.h"
@@ -44,9 +43,5 @@ class Hunk : public VectorOfPointers<Snippet>{
 
     int originalBeginsAt() const { return _original_from_line;}
     int modifiedBeginsAt() const { return _modified_from_line;}
-
-
-    int paintOriginal(QPainter &painter, int offset) const;
-    int paintModified(QPainter &painter, int offset) const;
 };
 #endif

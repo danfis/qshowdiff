@@ -27,27 +27,5 @@ void Snippet::_free()
     if (_levenshtein != NULL)
         delete _levenshtein;
 }
-int Snippet::_paint(Text *text, QPainter &painter, int offset, int from_line) const
-{
-    int lines = numLines(); 
-    int height = QFontMetrics(Settings::Text::font).height();
-
-    painter.setBrush(QBrush(getBackgroundColor()));
-    painter.setPen(getBackgroundColor());
-    painter.drawRect(0, offset, painter.window().width(), lines*height);
-
-    if (_levenshtein == NULL){
-        offset = text->paint(painter, offset, lines, from_line);
-    }else{
-        if (text == _original)
-            offset = text->paint(painter, offset, lines, from_line,
-                                 _levenshtein->getRangesOriginal());
-        if (text == _modified)
-            offset = text->paint(painter, offset, lines, from_line,
-                                 _levenshtein->getRangesModified());
-    }
-
-    return offset;
-}
 
 /* vim: set sw=4 ts=4 et ft=cpp : */

@@ -1,9 +1,9 @@
 #ifndef _FILE_H_
 #define _FILE_H_
 
-#include <QString>
-#include <QPainter>
 #include <vector>
+#include <QString>
+
 #include "hunk.h"
 
 class File : public VectorOfPointers<Hunk>{
@@ -26,9 +26,6 @@ class File : public VectorOfPointers<Hunk>{
     /**
      * Return filename.
      */
-    QString getFilename() const { return _filename; }
-
-    int paintOriginal(QPainter &original, int offset) const;
-    int paintModified(QPainter &original, int offset) const;
+    const QString &getFilename() const { return _filename; }
 };
 #endif

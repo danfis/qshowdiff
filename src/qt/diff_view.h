@@ -34,6 +34,24 @@ class DiffView : public QWidget{
      */
     int _current_file;
 
+
+    /**
+     * Painting:
+     */
+
+    QPainter *painter;
+    int offset;
+    int max_width;
+
+    void _paintFiles();
+    void _paintHunks(File const *);
+    void _paintSnippets(Hunk const *);
+    void _paintText(Text const *, int from_line);
+
+    void _paintFileHeader(const QString &);
+    void _paintHunkHeader();
+    void _paintSnippetBackground(Snippet const *);
+
   public:
     DiffView(bool original, QWidget *parent = 0) : QWidget(parent),
         _original(original), _current_file(-1) {}

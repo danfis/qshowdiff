@@ -16,7 +16,8 @@ MainWindow::MainWindow()
     int len = Diff::instance()->numFiles();
     DBG("Num files in Diff: " << len);
     for (int i=0; i < len; i++){
-        top->insertItem(i+1, new QListWidgetItem(Diff::instance()->getFile(i)));
+        top->insertItem(i+1,
+                new QListWidgetItem(Diff::instance()->getFilename(i)));
     }
 
     top->setCurrentRow(0);

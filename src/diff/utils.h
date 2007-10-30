@@ -62,7 +62,6 @@ class VectorPointerIterator{
 template<class Type>
 class VectorOfPointers{
   protected:
-    typedef typename std::vector<Type *>::const_iterator list_iterator_t;
     std::vector<Type *> _list;//! list of aggregated classes
 
     /**
@@ -91,10 +90,11 @@ class VectorOfPointers{
      */
     Type *_get(int pos) const { return _list[pos]; }
 
-    list_iterator_t _begin() const { return _list.begin();}
-    list_iterator_t _end() const { return _list.end();}
-
   public:
+    typedef typename std::vector<Type *>::const_iterator const_iterator;
+    const_iterator begin() const { return _list.begin();}
+    const_iterator end() const { return _list.end();}
+
     VectorOfPointers(){}
     VectorOfPointers(const VectorOfPointers<Type> &cl){ _copy(cl); }
     virtual ~VectorOfPointers(){ _free(); }
@@ -110,8 +110,8 @@ class VectorOfPointers{
 template<class Type>
 void VectorOfPointers<Type>::_copy(const VectorOfPointers<Type> &cl)
 {
-    list_iterator_t it = cl._list.begin();
-    list_iterator_t it_end = cl._list.end();
+    const_iterator it = cl._list.begin();
+    const_iterator it_end = cl._list.end();
     for (;it != it_end; it++){
         _list.push_back(new Type(**it));
     }
@@ -120,8 +120,8 @@ void VectorOfPointers<Type>::_copy(const VectorOfPointers<Type> &cl)
 template<class Type>
 void VectorOfPointers<Type>::_free()
 {
-    list_iterator_t it = _list.begin();
-    list_iterator_t it_end = _list.end();
+    const_iterator it = _list.begin();
+    const_iterator it_end = _list.end();
     for (;it != it_end; it++){
         delete *it;
     }
@@ -136,9 +136,9 @@ bool VectorOfPointers<Type>::operator==(const VectorOfPointers<Type> &cl) const
         return false;
 
     // _list and t._list has same length so no t._list.end() is needed
-    list_iterator_t it = _list.begin();
-    list_iterator_t it_end = _list.end();
-    list_iterator_t it2 = cl._list.begin();
+    const_iterator it = _list.begin();
+    const_iterator it_end = _list.end();
+    const_iterator it2 = cl._list.begin();
     for (;it != it_end; it++, it2++){
         if (**it != **it2)
             return false;

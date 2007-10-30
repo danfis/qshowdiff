@@ -46,13 +46,6 @@ class Snippet{
     void _copy(const Snippet &);
     void _free();
 
-    /**
-     * Paint text by painter on offset (from beginning). from_line is
-     * number of line, where text begin.
-     */
-    virtual int _paint(Text *text, QPainter &painter, int offset,
-                       int from_line) const;
-
     Snippet();
 
   public:
@@ -74,18 +67,14 @@ class Snippet{
     /**
      * Returns text from original file.
      */
-    virtual Text original() const{ return *_original;}
+    virtual const Text *getOriginal() const{ return _original;}
 
     /**
      * Returns text from modified file.
      */
-    virtual Text modified() const{ return *_modified;}
+    virtual const Text *getModified() const{ return _modified;}
 
 
-    virtual int paintOriginal(QPainter &painter, int offset, int from_line) const
-        { return _paint(_original, painter, offset, from_line); }
-    virtual int paintModified(QPainter &painter, int offset, int from_line) const
-        { return _paint(_modified, painter, offset, from_line); }
     virtual QColor &getBackgroundColor() const
         { return Settings::Text::background_color; }
 
@@ -114,7 +103,6 @@ class Added : public Snippet{
     Added(Text *t, Text *tt) : Snippet(t,tt){}
   public:
     Added(Text *t) : Snippet(t){ _original = new Text();}
-    Text original() const{ return Text();}
     QColor &getBackgroundColor() const
         { return Settings::Text::background_color_added;}
     bool isAdded() const { return true; }
@@ -126,7 +114,6 @@ class Deleted : public Snippet{
     Deleted(Text *t, Text *tt) : Snippet(t,tt){}
   public:
     Deleted(Text *t) : Snippet(t){ _modified = new Text(); }
-    Text modified() const{ return Text();}
     QColor &getBackgroundColor() const
         { return Settings::Text::background_color_deleted;}
     bool isDeleted() const { return true; }
