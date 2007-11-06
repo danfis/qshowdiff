@@ -1,11 +1,16 @@
 #include "tokens.h"
 using std::string;
 
-Tokens *factory(string type)
+Tokens *TokenFactory(string type)
 {
-    Tokens *ret;
+    Tokens *ret = NULL;
 
-    ret = new TokensGit();
+    if (type == "git"){
+        ret = new TokensGit();
+    }else if (type == "svn"){
+        ret = new TokensSvn();
+    }
+
     DBG("factory(" << type << ") - ret: " << (long)ret);
     return ret;
 }
@@ -41,6 +46,12 @@ Tokens::token Tokens::match(QString &line) const
 
 /* CONCRETE TOKENS: */
 TokensGit::TokensGit() : Tokens::Tokens("^diff --git a/([^ ]+) b/.*$",
+                                        "^@@ -([0-9]+),.* \\+([0-9]+),.*$",
+                                        "^ .*$",
+                                        "^\\+.*$",
+                                        "^-.*$"){}
+
+TokensSvn::TokensSvn() : Tokens::Tokens("^Index: ([^ ]+).*$",
                                         "^@@ -([0-9]+),.* \\+([0-9]+),.*$",
                                         "^ .*$",
                                         "^\\+.*$",

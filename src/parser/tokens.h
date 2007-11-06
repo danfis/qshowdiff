@@ -44,5 +44,10 @@ class TokensGit : public Tokens{
     TokensGit();
 };
 
-Tokens *factory(std::string);
+class TokensSvn : public Tokens{
+  public:
+    TokensSvn();
+};
+
+Tokens *TokenFactory(std::string);
 #endif

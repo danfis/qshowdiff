@@ -32,9 +32,10 @@
     #define MILESTONE(msg) DEBUG_HELPER(msg, "Milestone")
 #else
     #define DEBUG_HELPER(msg, type)
-    #define DB(msg, type)
+    #define DBG(msg)
     #define ERROR(msg, type)
     #define WARNING(msg, type)
+    #define MILESTONE(msg)
 #endif
 
 #endif

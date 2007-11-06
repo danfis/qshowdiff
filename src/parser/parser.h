@@ -3,10 +3,14 @@
 
 #include <string>
 #include <vector>
+#include <exception>
 #include <QTextStream>
 
 #include "tokens.h"
 #include "../diff/diff.h"
+
+class ParserException : std::exception {
+};
 
 class Parser{
   private:
@@ -64,7 +68,8 @@ class Parser{
     Parser(std::string type, QTextStream *in) :
         _current_state(START_STATE),
         _in(in),
-        _cur_file(NULL), _cur_hunk(NULL) { _tokens = factory(type); }
+        _cur_file(NULL), _cur_hunk(NULL)
+        { _tokens = TokenFactory(type); if (_tokens == NULL) throw ParserException();}
     void parse();
 };
 
