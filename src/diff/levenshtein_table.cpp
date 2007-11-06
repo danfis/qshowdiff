@@ -129,7 +129,7 @@ void LevenshteinTable::_findTrace()
     do {
         _trace.push_front(pair<int, int>(row, column));
         _minAncestor(row, column);
-    }while(row != 0 && column != 0);
+    }while(row != 0 || column != 0);
 }
 
 void LevenshteinTable::_minAncestor(int &row, int &column) const

@@ -23,9 +23,6 @@
  *
  */
 
-//TODO: Create Levenshtein distance class for Changed class.
-//      Levenshtein distance must be computed during creating a class, not
-//      during printing!
 
 /**
  * Base class for Context, Added, Deleted and Changed classes.
@@ -37,45 +34,34 @@
  */
 class Snippet{
   protected:
-    Text *_original;
-    Text *_modified;
-
-    LevenshteinDistances *_levenshtein;
+    ListOfTextSnippets _original;
+    ListOfTextSnippets _modified;
 
     void _copy(const Snippet &);
     void _free();
+    void _fromTextToTextSnippets(const Text &text, ListOfTextSnippets &ts);
+    void _splitByRanges(const QString &str, const std::vector<range_t> &ranges,
+                        TextSnippets &ts);
 
     Snippet();
 
   public:
-    Snippet(Text *text) : _original(text), _modified(text),
-        _levenshtein(NULL){}
-    Snippet(Text *original, Text *modified) : _original(original),
-            _modified(modified)
-            { _levenshtein = new LevenshteinDistances(*original, *modified);}
+    Snippet(const Text &text);
+    Snippet(const Text &original, const Text &modified);
     Snippet(const Snippet &s){ _copy(s); }
     virtual ~Snippet(){ _free();}
     virtual Snippet &operator=(const Snippet &s){_free();_copy(s);return *this;}
     
     virtual bool operator==(const Snippet &s) const
-        { return (*_original == *(s._original) &&
-                  *_modified == *(s._modified) &&
-                  (_original == _modified) == (s._original == s._modified));}
+        { return (_original == s._original &&
+                  _modified == s._modified);}
     virtual bool operator!=(const Snippet &s) const{ return !(*this == s); }
 
-    /**
-     * Returns text from original file.
-     */
-    virtual const Text *getOriginal() const{ return _original;}
+    virtual const ListOfTextSnippets &getOriginal() const { return _original; }
+    virtual const ListOfTextSnippets &getModified() const { return _modified; }
 
-    /**
-     * Returns text from modified file.
-     */
-    virtual const Text *getModified() const{ return _modified;}
-
-
-    virtual int numOriginalLines() const { return _original->numLines(); }
-    virtual int numModifiedLines() const { return _modified->numLines(); }
+    virtual int numOriginalLines() const { return _original.size(); }
+    virtual int numModifiedLines() const { return _modified.size(); }
     virtual int numLines() const { return numOriginalLines() >
         numModifiedLines() ? numOriginalLines() : numModifiedLines(); }
 
@@ -87,35 +73,43 @@ class Snippet{
 
 class Context : public Snippet{
   private:
-    Context(Text *t, Text *tt) : Snippet(t,tt){}
+    Context(const Text &t, const Text &tt) : Snippet(t,tt){}
   public:
-    Context(Text *t) : Snippet(t){}
+    Context(const Text &t) : Snippet(t){}
     Context(const Context &c) : Snippet(c){}
     bool isContext() const { return true; }
+
+    const ListOfTextSnippets &getModified() const { return _original; }
+    int numModifiedLines() const { return numOriginalLines(); }
 };
 
 class Added : public Snippet{
   private:
-    Added(Text *t, Text *tt) : Snippet(t,tt){}
+    Added(const Text &t, const Text &tt) : Snippet(t,tt){}
   public:
-    Added(Text *t) : Snippet(t){ _original = new Text();}
+    Added(const Text &t) : Snippet(t){}
     bool isAdded() const { return true; }
+
+    const ListOfTextSnippets &getOriginal() const { return _modified; }
+    int numOriginalLines() const { return _modified.size(); }
+    const ListOfTextSnippets &getModified() const { return _original; }
+    int numModifiedLines() const { return _original.size(); }
 };
 
 
 class Deleted : public Snippet{
   private:
-    Deleted(Text *t, Text *tt) : Snippet(t,tt){}
+    Deleted(const Text &t, const Text &tt) : Snippet(t,tt){}
   public:
-    Deleted(Text *t) : Snippet(t){ _modified = new Text(); }
+    Deleted(const Text &t) : Snippet(t){}
     bool isDeleted() const { return true; }
 };
 
 class Changed : public Snippet{
   private:
-    Changed(Text *t) : Snippet(t){}
+    Changed(const Text &t) : Snippet(t){}
   public:
-    Changed(Text *t, Text *t2) : Snippet(t,t2){}
+    Changed(const Text &t, const Text &t2) : Snippet(t,t2){}
     bool isChanged() const { return true; }
 };
 #endif

@@ -348,56 +348,60 @@ void Parser::_finishHunk()
 
 void Parser::_addCurrentLineToContext()
 {
-    if (_cur_context == NULL)
-        _cur_context = new Text();
-    _cur_context->addLine(new QString(_current_line.remove(0,1)));
+    //if (_cur_context == NULL)
+    //    _cur_context = new Text();
+    _cur_context.addLine(new QString(_current_line.remove(0,1)));
 }
 void Parser::_finishContext()
 {
-    if (_cur_context == NULL || _cur_hunk == NULL)
+    if (_cur_context.isEmpty() || _cur_hunk == NULL)
         return;
     _cur_hunk->addSnippet(new Context(_cur_context));
-    _cur_context = NULL;
+    _cur_context.clear();
 }
 
 void Parser::_addCurrentLineToAdded()
 {
-    if (_cur_added == NULL)
-        _cur_added = new Text();
-    _cur_added->addLine(new QString(_current_line.remove(0,1)));
+    //if (_cur_added == NULL)
+    //    _cur_added = new Text();
+    _cur_added.addLine(new QString(_current_line.remove(0,1)));
 }
 void Parser::_finishAdded()
 {
-    if (_cur_added == NULL || _cur_hunk == NULL){
+    if (_cur_added.isEmpty() || _cur_hunk == NULL){
         return;
     }
     _cur_hunk->addSnippet(new Added(_cur_added));
-    _cur_added = NULL;
+    _cur_added.clear();
 }
 
 void Parser::_addCurrentLineToDeleted()
 {
-    if (_cur_deleted == NULL)
-        _cur_deleted = new Text();
-    _cur_deleted->addLine(new QString(_current_line.remove(0,1)));
+    //if (_cur_deleted == NULL)
+    //    _cur_deleted = new Text();
+    _cur_deleted.addLine(new QString(_current_line.remove(0,1)));
 }
 void Parser::_finishDeleted()
 {
-    if (_cur_deleted == NULL || _cur_hunk == NULL){
+    if (_cur_deleted.isEmpty() || _cur_hunk == NULL){
         return;
     }
     _cur_hunk->addSnippet(new Deleted(_cur_deleted));
-    _cur_deleted = NULL;
+    _cur_deleted.clear();
 }
 
 void Parser::_finishChanged()
 {
-    if (_cur_deleted == NULL || _cur_added == NULL || _cur_hunk == NULL){
+    if (_cur_deleted.isEmpty() || _cur_added.isEmpty() || _cur_hunk == NULL){
         return;
     }
+
+    DBG("Finish changed:");
+    DBG("added: " << _cur_added.getLine(0).toStdString());
+    DBG("deleted: " << _cur_deleted.getLine(0).toStdString());
     _cur_hunk->addSnippet(new Changed(_cur_deleted, _cur_added));
-    _cur_deleted = NULL;
-    _cur_added = NULL;
+    _cur_deleted.clear();
+    _cur_added.clear();
 }
 /* PARSER END */
 

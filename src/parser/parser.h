@@ -71,9 +71,9 @@ class Parser{
 
     File *_cur_file;
     Hunk *_cur_hunk;
-    Text *_cur_context;
-    Text *_cur_deleted;
-    Text *_cur_added;
+    Text _cur_context;
+    Text _cur_deleted;
+    Text _cur_added;
 
     void _changeState(states);
     void _readNextLine();
@@ -105,8 +105,7 @@ class Parser{
     Parser(std::string type, QTextStream *in) :
         _current_state(START_STATE),
         _in(in),
-        _cur_file(NULL), _cur_hunk(NULL), _cur_context(NULL),
-        _cur_deleted(NULL), _cur_added(NULL) { _tokens = factory(type); }
+        _cur_file(NULL), _cur_hunk(NULL) { _tokens = factory(type); }
     void parse();
 };
 

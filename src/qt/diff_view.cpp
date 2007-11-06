@@ -2,6 +2,8 @@
 #include <QScrollBar>
 #include <QPainter>
 #include <QScrollArea>
+#include <vector>
+using std::vector;
 
 #include "../debug.h"
 #include "../settings.h"
@@ -117,6 +119,7 @@ void DiffView::_paintSnippets(Hunk const *hunk)
     int height = QFontMetrics(Settings::Text::font).height();
     Hunk::const_iterator it = hunk->begin();
     Hunk::const_iterator it_end = hunk->end();
+    list_of_ranges_t ranges_default;
 
     if (_original)
         from_line = hunk->originalBeginsAt();
@@ -124,50 +127,112 @@ void DiffView::_paintSnippets(Hunk const *hunk)
         from_line = hunk->modifiedBeginsAt();
 
     for (; it != it_end; it++){
+        const ListOfTextSnippets &ts = (_original ? (*it)->getOriginal() :
+                                                    (*it)->getModified());
+        int len = ts.size();
+
         _paintSnippetBackground(*it);
-        if (_original){
-            _paintText((*it)->getOriginal(), from_line);
-            from_line += (*it)->numOriginalLines();
-        }else{
-            _paintText((*it)->getModified(), from_line);
-            from_line += (*it)->numModifiedLines();
+
+        for (int i=0; i < len; i++){
+            _paintLine(ts[i], from_line);
+            from_line++;
         }
-        offset += height * (*it)->numLines();
+        
+        if (_original){
+            offset += height * ((*it)->numLines() - (*it)->numOriginalLines());
+        }else{
+            offset += height * ((*it)->numLines() - (*it)->numModifiedLines());
+        }
     }
 }
 
 
-void DiffView::_paintText(Text const *text, int from_line)
+void DiffView::_paintLine(const TextSnippets &ts, int from_line)
 {
-    int offset = this->offset;
+    QFontMetrics &metrics = Settings::Text::font_metrics;
+    QFontMetrics &metrics_subs = Settings::Text::font_substitution_metrics;
+    QFontMetrics &metrics_ins = Settings::Text::font_insertion_metrics;
 
-    QFontMetrics metrics = QFontMetrics(Settings::Text::font);
-    int height = metrics.height();
-
+    int height = std::max(std::max(metrics.height(), metrics_subs.height()),
+                          metrics_ins.height());
     QRect line_rect(0, offset, Settings::Text::line_column_width, height);
     QRect text_rect(Settings::Text::line_column_width +
-            Settings::Text::line_indentation, offset,
-            painter->window().width(), height);
-    int line = 0;
+            Settings::Text::line_indentation, offset, 0, height);
+    int left = text_rect.left();
+    int width;
 
     painter->setBrush(Qt::NoBrush);
-    painter->setPen(Settings::Text::font_color);
     painter->setFont(Settings::Text::font);
     
-    Text::const_iterator it = text->begin();
-    Text::const_iterator it_end = text->end();
-    for (;it != it_end; it++, line++){
-        painter->drawText(line_rect, Qt::AlignRight,
-                QString::number(from_line));
-        line_rect.moveTo(line_rect.x(), line_rect.y() + height);
-        from_line++;
+    // draw number of line
+    painter->setPen(Settings::Text::font_color);
+    painter->setPen(Settings::Text::font_color);
+    painter->drawText(line_rect, Qt::AlignRight,
+            QString::number(from_line));
 
-        max_width = std::max(max_width, metrics.width(**it));
-        text_rect.setWidth(max_width);
-        painter->drawText(text_rect, Qt::AlignLeft, **it);
-        text_rect.moveTo(text_rect.x(), text_rect.y() + height);
-        offset += height;
+    // draw line
+    TextSnippets::const_iterator it = ts.begin();
+    TextSnippets::const_iterator it_end = ts.end();
+    for (;it != it_end; it++){
+        switch ((*it)->getType()){
+            case range_t::NOCHANGE:
+                // move text_rect to appropriate place
+                width = metrics.width((*it)->getStr());
+                text_rect.setLeft(left);
+                text_rect.setWidth(width);
+                left += width;
+
+                painter->setFont(Settings::Text::font);
+                painter->setPen(Settings::Text::font_color);
+                break;
+
+            case range_t::DELETION:
+            case range_t::INSERTION:
+                // move text_rect to appropriate place
+                width = metrics_ins.width((*it)->getStr());
+                text_rect.setLeft(left);
+                text_rect.setWidth(width);
+                left += width;
+
+                painter->setPen(Settings::Text::background_color_changed);
+                painter->setBrush(Settings::Text::brush_insertion);
+                painter->drawRect(text_rect);
+
+                painter->setFont(Settings::Text::font_insertion);
+                painter->setPen(Settings::Text::font_color_insertion);
+                break;
+
+            case range_t::SUBSTITUTION:
+                // move text_rect to appropriate place
+                width = metrics_subs.width((*it)->getStr());
+                text_rect.setLeft(left);
+                text_rect.setWidth(width);
+                left += width;
+
+                painter->setPen(Settings::Text::background_color_changed);
+                painter->setBrush(Settings::Text::brush_substitution);
+                painter->drawRect(text_rect);
+
+                painter->setFont(Settings::Text::font_substitution);
+                painter->setPen(Settings::Text::font_color_substitution);
+                break;
+
+            default:
+                // move text_rect to appropriate place
+                width = metrics.width((*it)->getStr());
+                text_rect.setLeft(left);
+                text_rect.setWidth(width);
+                left += width;
+
+                painter->setFont(Settings::Text::font);
+                painter->setPen(Settings::Text::font_color);
+                break;
+        }
+        painter->drawText(text_rect, Qt::AlignLeft, (*it)->getStr());
     }
+
+    // increment offset
+    offset += height;
 }
 
 
