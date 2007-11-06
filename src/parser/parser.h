@@ -4,50 +4,9 @@
 #include <string>
 #include <vector>
 #include <QTextStream>
-#include <QRegExp>
+
+#include "tokens.h"
 #include "../diff/diff.h"
-
-class Tokens{
-  public:
-    /*{*/
-    /**
-     * Tokens
-     */
-    QRegExp file_tok;
-    QRegExp hunk_tok;
-    QRegExp context_tok;
-    QRegExp added_tok;
-    QRegExp deleted_tok;
-    /*}*/
-
-  protected:
-    Tokens(const char *file_tok,
-           const char *hunk_tok,
-           const char *context_tok,
-           const char *added_tok,
-           const char *deleted_tok);
-
-  public:
-    enum token{
-        FILE_TOK,
-        HUNK_TOK,
-        CONTEXT_TOK,
-        ADDED_TOK,
-        DELETED_TOK,
-        NONE_TOK
-    };
-
-    virtual token match(QString &line) const;
-};
-
-
-class TokensGit : public Tokens{
-  public:
-    TokensGit();
-};
-
-
-Tokens *factory(std::string);
 
 class Parser{
   private:
