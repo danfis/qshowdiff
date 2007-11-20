@@ -2,33 +2,71 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QVBoxLayout>
-#include <QListWidget>
 #include "main_window.h"
-#include "diff_view.h"
 
 MainWindow::MainWindow()
 {
     QSplitter *splitter = new QSplitter(Qt::Vertical);
-    QListWidget *top = new QListWidget();
-    DiffViewFrame *bottom = new DiffViewFrame();
+    _file_list = new QListWidget();
+    _diff_view_frame = new DiffViewFrame();
 
-    top->insertItem(0, new QListWidgetItem("All files"));
+    _file_list->insertItem(0, new QListWidgetItem("All files"));
     int len = Diff::instance()->numFiles();
     DBG("Num files in Diff: " << len);
     for (int i=0; i < len; i++){
-        top->insertItem(i+1,
+        _file_list->insertItem(i+1,
                 new QListWidgetItem(Diff::instance()->getFilename(i)));
     }
 
-    top->setCurrentRow(0);
+    _file_list->setCurrentRow(0);
 
-    splitter->addWidget(top);
-    splitter->addWidget(bottom);
+    splitter->addWidget(_file_list);
+    splitter->addWidget(_diff_view_frame);
     splitter->setStretchFactor(0,1);
     splitter->setStretchFactor(1,10);
 
     setCentralWidget(splitter);
 
-    connect(top, SIGNAL(currentRowChanged(int)), bottom,
+    connect(_file_list, SIGNAL(currentRowChanged(int)), _diff_view_frame,
             SLOT(changeFile(int)));
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *e)
+{
+    int key;
+
+    e->accept();
+    DBG("Key Event: " << e->key() << " - " << e->text().toStdString());
+
+    key = e->key();
+    switch (key){
+        case 16777220: // enter
+            _diff_view_frame->scrollDown(10);
+            break;
+        case 16777219: // backspace
+            _diff_view_frame->scrollUp(10);
+            break;
+
+        case 32: // space
+            _diff_view_frame->scrollDown(100);
+            break;
+
+        case 16777238: // pgup
+            _diff_view_frame->scrollUp(100);
+            break;
+        case 16777239: // pgdown
+            _diff_view_frame->scrollDown(100);
+            break;
+
+
+        case 16777235: // up
+            if (_file_list->currentRow() != 0)
+                _file_list->setCurrentRow(_file_list->currentRow() - 1);
+            break;
+        case 16777237: // down
+            if (_file_list->currentRow() < _file_list->count() - 1)
+                _file_list->setCurrentRow(_file_list->currentRow() + 1);
+            break;
+
+    }
 }

@@ -39,11 +39,12 @@ int main(int argc, char *argv[])
                      "detaching." << std::endl;
     }
 
-	QApplication app(argc, argv);
+    QApplication app(argc, argv);
 
-	MainWindow win;
-	win.show();
-	app.exec();
+    MainWindow win;
+    win.show();
+    win.grabKeyboard();
+    app.exec();
 
     MILESTONE("====== FINISH QSHOWDIFF ======");
     MILESTONE("");

@@ -16,28 +16,28 @@ DiffViewFrame::DiffViewFrame(QWidget *parent) : QWidget(parent)
     QSplitter *splitter = new QSplitter(Qt::Horizontal);
     _original = new DiffView(true);
     _modified = new DiffView(false);
-    QScrollArea *orig = new QScrollArea();
-    QScrollArea *modif = new QScrollArea();
+    _orig = new QScrollArea();
+    _modif = new QScrollArea();
 
     
-    orig->setWidget(_original);
-    orig->setWidgetResizable(true);
-    orig->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    modif->setWidget(_modified);
-    modif->setWidgetResizable(true);
+    _orig->setWidget(_original);
+    _orig->setWidgetResizable(true);
+    _orig->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    _modif->setWidget(_modified);
+    _modif->setWidgetResizable(true);
 
-    splitter->addWidget(orig);
-    splitter->addWidget(modif);
+    splitter->addWidget(_orig);
+    splitter->addWidget(_modif);
 
     layout->addWidget(splitter);
 
 	setLayout(layout);
 
 
-    QScrollBar *orig_vertical = orig->verticalScrollBar();
-    QScrollBar *modif_vertical = modif->verticalScrollBar();
-    QScrollBar *orig_horizontal = orig->horizontalScrollBar();
-    QScrollBar *modif_horizontal = modif->horizontalScrollBar();
+    QScrollBar *orig_vertical = _orig->verticalScrollBar();
+    QScrollBar *modif_vertical = _modif->verticalScrollBar();
+    QScrollBar *orig_horizontal = _orig->horizontalScrollBar();
+    QScrollBar *modif_horizontal = _modif->horizontalScrollBar();
 
     connect(orig_vertical, SIGNAL(valueChanged(int)), modif_vertical,
             SLOT(setValue(int)));
@@ -56,6 +56,18 @@ void DiffViewFrame::changeFile(int num) const
         _original->setCurrentFile(num - 1);
         _modified->setCurrentFile(num - 1);
     }
+}
+
+void DiffViewFrame::scrollDown(int how_many)
+{
+    QScrollBar *sb = _modif->verticalScrollBar();
+    sb->setValue(sb->value() + how_many);
+}
+
+void DiffViewFrame::scrollUp(int how_many)
+{
+    QScrollBar *sb = _modif->verticalScrollBar();
+    sb->setValue(sb->value() - how_many);
 }
 
 /* DiffView */

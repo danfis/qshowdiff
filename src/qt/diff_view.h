@@ -14,9 +14,14 @@ class DiffViewFrame : public QWidget{
     DiffView *_original;
     DiffView *_modified;
 
+    QScrollArea *_orig;
+    QScrollArea *_modif;
 
   public:
 	DiffViewFrame(QWidget *parent = 0);
+
+    void scrollDown(int);
+    void scrollUp(int);
 
   public slots:
     /**
