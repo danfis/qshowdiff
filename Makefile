@@ -1,31 +1,31 @@
 CC = g++
-CXXFLAGS = -Wall -Wno-long-long -pedantic
+MOC = moc
+
 DEBUGFLAGS = -g
-QT_INCLUDE = -DQT_SHARED -I/opt/qt4/include -I/opt/qt4/include/QtCore \
-			 -I/opt/qt4/include/QtGui
-QT_LIBS = -lQtCore -lQtGui -L/opt/qt4/lib/ -lz -lm -pthread -lgthread-2.0 \
-		  -lrt -lglib-2.0 -lpthread -ldl
+CXXFLAGS_OPTIM = -march=k8 -mtune=k8 -msse2 -O2 -pipe
+CXXFLAGS = -Wall -Wno-long-long -pedantic $(DEBUGFLAGS) $(CXXFLAGS_OPTIM)
 
-ALL_FLAGS = $(CXXFLAGS) $(DEBUGFLAGS) $(QT_INCLUDE)
-ALL_LD_FLAGS = $(QT_LIBS)
-
-SUBDIRS = src
+QT_CFLAGS = $(shell pkg-config QtCore QtGui --cflags)
+QT_LIBS = $(shell pkg-config QtCore QtGui --libs)
 
 # export variables for sub-makes
 export CC
-export ALL_FLAGS
-export ALL_LD_FLAGS
+export MOC
+export CXXFLAGS
+export QT_CFLAGS
+export QT_LIBS
 
 all:
-	$(foreach dir, $(SUBDIRS), cd $(dir) && $(MAKE) $(MFLAGS) all)
+	cd src && $(MAKE) all
+	cd tests && $(MAKE) all
 	
 clean:
 	rm -f *.o
-	$(foreach dir, $(SUBDIRS), cd $(dir) && $(MAKE) $(MFLAGS) clean)
-	cd tests && $(MAKE) $(MFLAGS) clean
+	cd src && $(MAKE) clean
+	cd tests && $(MAKE) clean
 
-test:
-	cd tests && $(MAKE) $(MFLAGS)
+check:
+	cd tests && $(MAKE)
 
-.PHONY: all test clean
+.PHONY: all check clean
 
