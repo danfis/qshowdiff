@@ -2,8 +2,7 @@ CC = g++
 MOC = moc
 
 DEBUGFLAGS = -g
-CXXFLAGS_OPTIM = -march=k8 -mtune=k8 -msse2 -O2 -pipe
-CXXFLAGS = -Wall -Wno-long-long -pedantic $(DEBUGFLAGS) $(CXXFLAGS_OPTIM)
+CXXFLAGS += -Wall -Wno-long-long -pedantic $(DEBUGFLAGS)
 
 QT_CFLAGS = $(shell pkg-config QtCore QtGui --cflags)
 QT_LIBS = $(shell pkg-config QtCore QtGui --libs)
@@ -27,4 +26,3 @@ check: all
 	cd tests && $(MAKE)
 
 .PHONY: all check clean
-
