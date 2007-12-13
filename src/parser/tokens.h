@@ -19,9 +19,21 @@ class Tokens{
     QRegExp deleted_tok;
     /*}*/
 
+    /*{*/
+    /**
+     * Position of elements in tokens.
+     */
+    int filename_pos;
+    int hunk_from_original_pos;
+    int hunk_from_modified_pos;
+    /*}*/
+
   protected:
     Tokens(const char *file_tok,
+           int filename_pos,
            const char *hunk_tok,
+           int from_original_pos,
+           int from_modified_pos,
            const char *context_tok,
            const char *added_tok,
            const char *deleted_tok);
@@ -37,6 +49,11 @@ class Tokens{
     };
 
     virtual token match(QString &line) const;
+    virtual int getFilenamePos() const { return filename_pos; }
+    virtual int getHunkFromOriginalPos() const
+        { return hunk_from_original_pos; }
+    virtual int getHunkFromModifiedPos() const
+        { return hunk_from_modified_pos; }
 };
 
 class TokensGit : public Tokens{

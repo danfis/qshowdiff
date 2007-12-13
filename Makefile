@@ -17,7 +17,7 @@ export QT_LIBS
 
 all:
 	cd src && $(MAKE) all
-	cd tests && $(MAKE) all
+#cd tests && $(MAKE) all
 	
 clean:
 	rm -f *.o

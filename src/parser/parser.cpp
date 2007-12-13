@@ -280,12 +280,15 @@ QString Parser::_capCurrentLine(int cap)
 
 void Parser::_createNewFile()
 {
+    int pos;
+
     if (_cur_file != NULL){
         DBG("Can't create new file - _cur_file = " << (long)_cur_file);
         return;
     }
 
-    Diff::instance()->addFile(_cur_file = new File(_capCurrentLine(1)));
+    pos = _tokens->getFilenamePos();
+    Diff::instance()->addFile(_cur_file = new File(_capCurrentLine(pos)));
 }
 void Parser::_finishFile()
 {
@@ -294,15 +297,19 @@ void Parser::_finishFile()
 
 void Parser::_createNewHunk()
 {
+    int pos1, pos2;
+    int from1, from2;
+
     if (_cur_file == NULL || _cur_hunk != NULL){
         DBG("Can't create new hunk - _cur_hunk = " << (long)_cur_hunk
                 << ", _cur_file = " << (long)_cur_file);
         return;
     }
 
-    int from1, from2;
-    from1 = _capCurrentLine(1).toInt();
-    from2 = _capCurrentLine(2).toInt();
+    pos1 = _tokens->getHunkFromOriginalPos();
+    pos2 = _tokens->getHunkFromModifiedPos();
+    from1 = _capCurrentLine(pos1).toInt();
+    from2 = _capCurrentLine(pos2).toInt();
 
     _cur_file->addHunk(_cur_hunk = new Hunk(from1, from2));
 }
