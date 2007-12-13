@@ -1,8 +1,8 @@
-CXXFLAGS += $(QT_CFLAGS)
+CXXFLAGS += $(QT_CFLAGS) -I../src -I../src/diff
 LDFLAGS += $(QT_LIBS) -lcppu
 
-TEST_SUITES = text.cpp snippet.cpp hunk.cpp diff.cpp levenshtein.cpp
-OBJS_LIST = snippet.o settings.o text.o hunk.o diff.o file.o levenshtein.o
+TEST_SUITES = text.cpp hunk.cpp diff.cpp levenshtein.cpp
+OBJS_LIST = snippet.o settings.o diff.o levenshtein_table.o levenshtein_distances.o
 OBJS = $(foreach file, $(OBJS_LIST), ../src/objs/$(file))
 
 all: run_tests

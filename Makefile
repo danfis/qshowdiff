@@ -17,14 +17,13 @@ export QT_LIBS
 
 all:
 	cd src && $(MAKE) all
-#cd tests && $(MAKE) all
 	
 clean:
 	rm -f *.o
 	cd src && $(MAKE) clean
 	cd tests && $(MAKE) clean
 
-check:
+check: all
 	cd tests && $(MAKE)
 
 .PHONY: all check clean

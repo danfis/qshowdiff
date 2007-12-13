@@ -2,7 +2,8 @@
 #include <vector>
 #include <iostream>
 #include "text.h"
-#include "levenshtein.h"
+#include "levenshtein_table.h"
+#include "levenshtein_distances.h"
 using namespace std;
 void printTable(vector<vector<int> > &table)
 {
