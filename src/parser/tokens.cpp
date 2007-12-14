@@ -30,7 +30,7 @@ Tokens::Tokens(const char *f_tok,
     added_tok(a_tok),
     deleted_tok(d_tok),
 
-    filename_pos(filename_pos),
+    filename_pos(fname_pos),
     hunk_from_original_pos(from_orig_pos),
     hunk_from_modified_pos(from_modif_pos){}
 
