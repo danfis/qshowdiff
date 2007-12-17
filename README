@@ -1,0 +1,20 @@
+QShowDiff
+==========
+Tool for visualisation of diffs generated from various VCS systems.
+
+
+Requirements
+-------------
+For compilation you need only Qt4 devel files.
+
+
+Compilation and Installation
+----------------------------
+For compilation just type:
+    make
+
+For installation to /usr/local/bin type:
+    sudo make install
+And if you want to change destination dir:
+    sudo make DESTDIR=/path/to/dir install
+

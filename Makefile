@@ -1,7 +1,12 @@
 CC = g++
 MOC = moc
 
-DEBUGFLAGS = -g
+ifeq ($(DESTDIR),)
+DESTDIR = /usr/local/bin
+endif
+
+DEBUGFLAGS =
+#DEBUGFLAGS = -g
 CXXFLAGS += -Wall -Wno-long-long -pedantic $(DEBUGFLAGS)
 
 QT_CFLAGS = $(shell pkg-config QtCore QtGui --cflags)
@@ -16,7 +21,10 @@ export QT_LIBS
 
 all:
 	cd src && $(MAKE) all
-	
+
+install: all
+	cp src/qshowdiff $(DESTDIR)/qshowdiff
+
 clean:
 	rm -f *.o
 	cd src && $(MAKE) clean
@@ -25,4 +33,4 @@ clean:
 check: all
 	cd tests && $(MAKE)
 
-.PHONY: all check clean
+.PHONY: all check clean install
