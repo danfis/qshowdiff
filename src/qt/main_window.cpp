@@ -80,6 +80,12 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
             _diff_view_frame->scrollDown(100);
             break;
 
+        case 16777236: //left
+            _diff_view_frame->scrollLeft(50);
+            break;
+        case 16777234:
+            _diff_view_frame->scrollRight(50);
+            break;
 
         case 16777235: // up
             if (_file_list->currentRow() != 0)

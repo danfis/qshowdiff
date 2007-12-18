@@ -92,6 +92,17 @@ void DiffViewFrame::scrollUp(int how_many)
     sb->setValue(sb->value() - how_many);
 }
 
+void DiffViewFrame::scrollLeft(int how_many)
+{
+    QScrollBar *sb = _modif->horizontalScrollBar();
+    sb->setValue(sb->value() + how_many);
+}
+
+void DiffViewFrame::scrollRight(int how_many)
+{
+    QScrollBar *sb = _modif->horizontalScrollBar();
+    sb->setValue(sb->value() - how_many);
+}
 /* DiffView */
 void DiffView::paintEvent(QPaintEvent *e)
 {

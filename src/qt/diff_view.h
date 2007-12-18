@@ -44,6 +44,8 @@ class DiffViewFrame : public QWidget{
 
     void scrollDown(int);
     void scrollUp(int);
+    void scrollLeft(int);
+    void scrollRight(int);
 
   public slots:
     /**
