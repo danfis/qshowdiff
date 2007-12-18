@@ -267,6 +267,7 @@ void DiffView::_paintLine(const TextSnippets &ts, int from_line)
 
     // increment offset
     offset += height;
+    max_width = std::max(max_width, left);
 }
 
 
