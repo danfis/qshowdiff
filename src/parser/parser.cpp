@@ -75,6 +75,7 @@ void Parser::_file()
     _finishHunk();
 
     if (_current_token == Tokens::FILE_TOK){
+        _finishFile();
         _createNewFile();
         _readNextLine();
     }else if (_current_token == Tokens::HUNK_TOK){
@@ -238,11 +239,12 @@ void Parser::_readNextLine()
     _current_line = _in->readLine();
     if (_current_line.isNull()){
         _changeState(END_STATE);
+        _current_token = Tokens::NONE_TOK;
         return;
     }
 
     _current_token = _tokens->match(_current_line);
-    DBG("Read line \"" << _current_line.toStdString() << "\"");
+    DBG("Read line \"" << _current_line.toStdString() << "\" --> current token:" << _current_token);
 }
 
 void Parser::_changeState(Parser::states new_state)
