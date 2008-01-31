@@ -19,8 +19,11 @@ export CXXFLAGS
 export QT_CFLAGS
 export QT_LIBS
 
-all:
+all: prepare
 	cd src && $(MAKE) all
+
+prepare:
+	mkdir -p src/objs
 
 install: all
 	cp src/qshowdiff $(DESTDIR)/qshowdiff
@@ -29,8 +32,9 @@ clean:
 	rm -f *.o
 	cd src && $(MAKE) clean
 	cd tests && $(MAKE) clean
+	rm -rf src/objs
 
 check: all
 	cd tests && $(MAKE)
 
-.PHONY: all check clean install
+.PHONY: all check clean install prepare
