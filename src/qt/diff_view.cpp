@@ -73,10 +73,18 @@ DiffViewFrame::DiffViewFrame(QWidget *parent) : QWidget(parent)
 
 void DiffViewFrame::changeFile(int num) const
 {
+    QScrollBar *sb;
+
     if (num != -1){
         // num - 1 is there because num==0 is for 'All files'
         _original->setCurrentFile(num - 1);
         _modified->setCurrentFile(num - 1);
+
+        // reset sliders:
+        sb = _orig->verticalScrollBar();
+        sb->setValue(sb->minimum());
+        sb = _orig->horizontalScrollBar();
+        sb->setValue(sb->minimum());
     }
 }
 
