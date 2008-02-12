@@ -213,6 +213,7 @@ void DiffView::_paintLine(const TextSnippets &ts, int from_line)
             Settings::Text::line_indentation, offset, 0, height);
     int left = text_rect.left();
     int width;
+    QString str;
 
     painter->setBrush(Qt::NoBrush);
     painter->setFont(Settings::Text::font);
@@ -227,10 +228,14 @@ void DiffView::_paintLine(const TextSnippets &ts, int from_line)
     TextSnippets::const_iterator it = ts.begin();
     TextSnippets::const_iterator it_end = ts.end();
     for (;it != it_end; it++){
+        str = (*it)->getStr();
+        // replace '\t' by eight spaces
+        str.replace(QChar('\t'), QString("        "));
+
         switch ((*it)->getType()){
             case range_t::NOCHANGE:
                 // move text_rect to appropriate place
-                width = metrics.width((*it)->getStr());
+                width = metrics.width(str);
                 text_rect.setLeft(left);
                 text_rect.setWidth(width);
                 left += width;
@@ -242,7 +247,7 @@ void DiffView::_paintLine(const TextSnippets &ts, int from_line)
             case range_t::DELETION:
             case range_t::INSERTION:
                 // move text_rect to appropriate place
-                width = metrics_ins.width((*it)->getStr());
+                width = metrics_ins.width(str);
                 text_rect.setLeft(left);
                 text_rect.setWidth(width);
                 left += width;
@@ -257,7 +262,7 @@ void DiffView::_paintLine(const TextSnippets &ts, int from_line)
 
             case range_t::SUBSTITUTION:
                 // move text_rect to appropriate place
-                width = metrics_subs.width((*it)->getStr());
+                width = metrics_subs.width(str);
                 text_rect.setLeft(left);
                 text_rect.setWidth(width);
                 left += width;
@@ -272,7 +277,7 @@ void DiffView::_paintLine(const TextSnippets &ts, int from_line)
 
             default:
                 // move text_rect to appropriate place
-                width = metrics.width((*it)->getStr());
+                width = metrics.width(str);
                 text_rect.setLeft(left);
                 text_rect.setWidth(width);
                 left += width;
@@ -281,7 +286,7 @@ void DiffView::_paintLine(const TextSnippets &ts, int from_line)
                 painter->setPen(Settings::Text::font_color);
                 break;
         }
-        painter->drawText(text_rect, Qt::AlignLeft, (*it)->getStr());
+        painter->drawText(text_rect, Qt::AlignLeft, str);
     }
 
     // increment offset
