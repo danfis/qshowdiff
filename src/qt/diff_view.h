@@ -69,6 +69,7 @@ class DiffView : public QWidget{
      */
 
     QPainter *painter;
+    const QRegion *region; /*! region which has to be repaint */
     int offset;
     int max_width;
 

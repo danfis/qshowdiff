@@ -24,6 +24,7 @@
 #include <QScrollBar>
 #include <QPainter>
 #include <QScrollArea>
+#include <QPaintEvent>
 #include <vector>
 using std::vector;
 
@@ -115,6 +116,8 @@ void DiffViewFrame::scrollRight(int how_many)
 void DiffView::paintEvent(QPaintEvent *e)
 {
     painter = new QPainter(this);
+    region = &e->region();
+
     offset = 0;
     max_width = 0;
 
@@ -210,83 +213,86 @@ void DiffView::_paintLine(const TextSnippets &ts, int from_line)
                           metrics_ins.height());
     QRect line_rect(0, offset, Settings::Text::line_column_width, height);
     QRect text_rect(Settings::Text::line_column_width +
-            Settings::Text::line_indentation, offset, 0, height);
+            Settings::Text::line_indentation, offset, this->width(), height);
     int left = text_rect.left();
     int width;
     QString str;
 
-    painter->setBrush(Qt::NoBrush);
-    painter->setFont(Settings::Text::font);
-    
-    // draw number of line
-    painter->setPen(Settings::Text::font_color);
-    painter->setPen(Settings::Text::font_color);
-    painter->drawText(line_rect, Qt::AlignRight,
-            QString::number(from_line));
+    // paint lines only if they are in viewport!
+    if (region->intersects(line_rect) || region->intersects(text_rect)){
+        painter->setBrush(Qt::NoBrush);
+        painter->setFont(Settings::Text::font);
 
-    // draw line
-    TextSnippets::const_iterator it = ts.begin();
-    TextSnippets::const_iterator it_end = ts.end();
-    for (;it != it_end; it++){
-        str = (*it)->getStr();
-        // replace '\t' by eight spaces
-        str.replace(QChar('\t'), QString("        "));
+        // draw number of line
+        painter->setPen(Settings::Text::font_color);
+        painter->setPen(Settings::Text::font_color);
+        painter->drawText(line_rect, Qt::AlignRight,
+                QString::number(from_line));
 
-        switch ((*it)->getType()){
-            case range_t::NOCHANGE:
-                // move text_rect to appropriate place
-                width = metrics.width(str);
-                text_rect.setLeft(left);
-                text_rect.setWidth(width);
-                left += width;
+        // draw line
+        TextSnippets::const_iterator it = ts.begin();
+        TextSnippets::const_iterator it_end = ts.end();
+        for (;it != it_end; it++){
+            str = (*it)->getStr();
+            // replace '\t' by eight spaces
+            str.replace(QChar('\t'), QString("        "));
 
-                painter->setFont(Settings::Text::font);
-                painter->setPen(Settings::Text::font_color);
-                break;
+            switch ((*it)->getType()){
+                case range_t::NOCHANGE:
+                    // move text_rect to appropriate place
+                    width = metrics.width(str);
+                    text_rect.setLeft(left);
+                    text_rect.setWidth(width);
+                    left += width;
 
-            case range_t::DELETION:
-            case range_t::INSERTION:
-                // move text_rect to appropriate place
-                width = metrics_ins.width(str);
-                text_rect.setLeft(left);
-                text_rect.setWidth(width);
-                left += width;
+                    painter->setFont(Settings::Text::font);
+                    painter->setPen(Settings::Text::font_color);
+                    break;
 
-                painter->setPen(Settings::Text::background_color_changed);
-                painter->setBrush(Settings::Text::brush_insertion);
-                painter->drawRect(text_rect);
+                case range_t::DELETION:
+                case range_t::INSERTION:
+                    // move text_rect to appropriate place
+                    width = metrics_ins.width(str);
+                    text_rect.setLeft(left);
+                    text_rect.setWidth(width);
+                    left += width;
 
-                painter->setFont(Settings::Text::font_insertion);
-                painter->setPen(Settings::Text::font_color_insertion);
-                break;
+                    painter->setPen(Settings::Text::background_color_changed);
+                    painter->setBrush(Settings::Text::brush_insertion);
+                    painter->drawRect(text_rect);
 
-            case range_t::SUBSTITUTION:
-                // move text_rect to appropriate place
-                width = metrics_subs.width(str);
-                text_rect.setLeft(left);
-                text_rect.setWidth(width);
-                left += width;
+                    painter->setFont(Settings::Text::font_insertion);
+                    painter->setPen(Settings::Text::font_color_insertion);
+                    break;
 
-                painter->setPen(Settings::Text::background_color_changed);
-                painter->setBrush(Settings::Text::brush_substitution);
-                painter->drawRect(text_rect);
+                case range_t::SUBSTITUTION:
+                    // move text_rect to appropriate place
+                    width = metrics_subs.width(str);
+                    text_rect.setLeft(left);
+                    text_rect.setWidth(width);
+                    left += width;
 
-                painter->setFont(Settings::Text::font_substitution);
-                painter->setPen(Settings::Text::font_color_substitution);
-                break;
+                    painter->setPen(Settings::Text::background_color_changed);
+                    painter->setBrush(Settings::Text::brush_substitution);
+                    painter->drawRect(text_rect);
 
-            default:
-                // move text_rect to appropriate place
-                width = metrics.width(str);
-                text_rect.setLeft(left);
-                text_rect.setWidth(width);
-                left += width;
+                    painter->setFont(Settings::Text::font_substitution);
+                    painter->setPen(Settings::Text::font_color_substitution);
+                    break;
 
-                painter->setFont(Settings::Text::font);
-                painter->setPen(Settings::Text::font_color);
-                break;
+                default:
+                    // move text_rect to appropriate place
+                    width = metrics.width(str);
+                    text_rect.setLeft(left);
+                    text_rect.setWidth(width);
+                    left += width;
+
+                    painter->setFont(Settings::Text::font);
+                    painter->setPen(Settings::Text::font_color);
+                    break;
+            }
+            painter->drawText(text_rect, Qt::AlignLeft, str);
         }
-        painter->drawText(text_rect, Qt::AlignLeft, str);
     }
 
     // increment offset
@@ -302,25 +308,33 @@ void DiffView::_paintFileHeader(const QString &filename)
     QRect text_rect(0 + Settings::File::text_left_indentation, offset,
             painter->window().width(), Settings::File::box_height);
 
-    // Rectangle
-    painter->setBrush(QBrush(Settings::File::background_color));
-    painter->setPen(Settings::File::background_color);
-    painter->drawRect(rect);
+    // paint only if is in viewport
+    if (region->intersects(rect)){
+        // Rectangle
+        painter->setBrush(QBrush(Settings::File::background_color));
+        painter->setPen(Settings::File::background_color);
+        painter->drawRect(rect);
 
-    // Text 
-    painter->setFont(Settings::File::font);
-    painter->setPen(Settings::File::font_color);
-    painter->drawText(text_rect, Qt::AlignVCenter, "Filename: " + filename);
+        // Text 
+        painter->setFont(Settings::File::font);
+        painter->setPen(Settings::File::font_color);
+        painter->drawText(text_rect, Qt::AlignVCenter, "Filename: " + filename);
+    }
 
     offset += Settings::File::box_height;
 }
 
 void DiffView::_paintHunkHeader()
 {
-    painter->setBrush(QBrush(Settings::Hunk::separator_color));
-    painter->setPen(Settings::Hunk::separator_color);
-    painter->drawRect(0, offset, painter->window().width(),
+    QRect rect(0, offset, painter->window().width(),
             Settings::Hunk::separator_height);
+
+    // repaint only if is rect in viewport
+    if (region->intersects(rect)){
+        painter->setBrush(QBrush(Settings::Hunk::separator_color));
+        painter->setPen(Settings::Hunk::separator_color);
+        painter->drawRect(rect);
+    }
 
     offset += Settings::Hunk::separator_height;
 }
@@ -330,18 +344,21 @@ void DiffView::_paintSnippetBackground(Snippet const *snippet)
     int lines = snippet->numLines(); 
     int height = QFontMetrics(Settings::Text::font).height();
     QColor color;
+    QRect rect(0, offset, painter->window().width(), lines*height);
 
-    if (snippet->isContext()){
-        color = Settings::Text::background_color;
-    }else if (snippet->isAdded()){
-        color = Settings::Text::background_color_added;
-    }else if (snippet->isDeleted()){
-        color = Settings::Text::background_color_deleted;
-    }else if (snippet->isChanged()){
-        color = Settings::Text::background_color_changed;
+    if (region->intersects(rect)){
+        if (snippet->isContext()){
+            color = Settings::Text::background_color;
+        }else if (snippet->isAdded()){
+            color = Settings::Text::background_color_added;
+        }else if (snippet->isDeleted()){
+            color = Settings::Text::background_color_deleted;
+        }else if (snippet->isChanged()){
+            color = Settings::Text::background_color_changed;
+        }
+
+        painter->setBrush(QBrush(color));
+        painter->setPen(color);
+        painter->drawRect(rect);
     }
-
-    painter->setBrush(QBrush(color));
-    painter->setPen(color);
-    painter->drawRect(0, offset, painter->window().width(), lines*height);
 }
