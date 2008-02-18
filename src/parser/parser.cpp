@@ -130,7 +130,7 @@ void Parser::_context()
                 _changeState(DELETED_STATE);
                 break;
             default:
-                _changeState(END_STATE);
+                _readNextLine();
         }
     }
 }
@@ -158,7 +158,7 @@ void Parser::_added()
                 _changeState(CONTEXT_STATE);
                 break;
             default:
-                _changeState(END_STATE);
+                _readNextLine();
         }
     }
 }
@@ -186,7 +186,7 @@ void Parser::_deleted()
                 _changeState(CONTEXT_STATE);
                 break;
             default:
-                _changeState(END_STATE);
+                _readNextLine();
         }
     }
 }
@@ -215,7 +215,7 @@ void Parser::_changed()
                 _changeState(CONTEXT_STATE);
                 break;
             default:
-                _changeState(END_STATE);
+                _readNextLine();
         }
     }
 }
