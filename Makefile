@@ -1,13 +1,15 @@
 CC = g++
 MOC = moc
 
-ifeq ($(DESTDIR),)
-DESTDIR = /usr/local/bin
-endif
+DESTDIR ?= /usr/local/bin
 
-DEBUGFLAGS = -DNDEBUG
-#DEBUGFLAGS = -g
-CXXFLAGS += -Wall -Wno-long-long -pedantic $(DEBUGFLAGS)
+ifeq ($(DEBUG), yes)
+  DEBUGFLAGS = -g
+  CXXFLAGS = -Wall -Wno-long-long -pedantic $(DEBUGFLAGS)
+else
+  DEBUGFLAGS = -DNDEBUG
+  CXXFLAGS += -Wall -Wno-long-long -pedantic $(DEBUGFLAGS)
+endif
 
 QT_CFLAGS = $(shell pkg-config QtCore QtGui --cflags)
 QT_LIBS = $(shell pkg-config QtCore QtGui --libs)
