@@ -29,7 +29,7 @@
 #include "../debug.h"
 
 class Tokens{
-  public:
+  protected:
     /*{*/
     /**
      * Tokens
@@ -48,18 +48,25 @@ class Tokens{
     int filename_pos;
     int hunk_from_original_pos;
     int hunk_from_modified_pos;
+    int context_pos;
+    int added_pos;
+    int deleted_pos;
     /*}*/
 
-  protected:
+    QString _cur_line;
+
+
     Tokens(const char *file_tok,
            int filename_pos,
            const char *hunk_tok,
            int from_original_pos,
            int from_modified_pos,
            const char *context_tok,
+           int context_pos,
            const char *added_tok,
-           const char *deleted_tok);
-
+           int added_pos,
+           const char *deleted_tok,
+           int deleted_pos);
   public:
     enum token{
         FILE_TOK,
@@ -70,13 +77,33 @@ class Tokens{
         NONE_TOK
     };
 
-    virtual token match(QString &line) const;
-    virtual int getFilenamePos() const { return filename_pos; }
-    virtual int getHunkFromOriginalPos() const
-        { return hunk_from_original_pos; }
-    virtual int getHunkFromModifiedPos() const
-        { return hunk_from_modified_pos; }
+    virtual void setCurrentLine(QString &line)
+        { _cur_line = line; }
+
+    virtual token match() const;
+
+    virtual QString getFilename()
+        { return file_tok.cap(filename_pos); }
+
+    virtual std::pair<int, int> getHunkNums()
+        { return std::make_pair<int, int>
+                    (hunk_tok.cap(hunk_from_original_pos).toInt(),
+                     hunk_tok.cap(hunk_from_modified_pos).toInt()); }
+
+    virtual QString getContext()
+        { return context_tok.cap(context_pos); }
+
+    virtual QString getAdded()
+        { return added_tok.cap(added_pos); }
+
+    virtual QString getDeleted()
+        { return deleted_tok.cap(deleted_pos); }
 };
+
+Tokens *TokenFactory(std::string);
+
+
+/** Types of input: **/
 
 class TokensGit : public Tokens{
   public:
@@ -88,5 +115,8 @@ class TokensSvn : public Tokens{
     TokensSvn();
 };
 
-Tokens *TokenFactory(std::string);
+class TokensDiff : public Tokens{
+  public:
+    TokensDiff();
+};
 #endif

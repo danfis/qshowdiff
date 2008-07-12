@@ -31,6 +31,8 @@ Tokens *TokenFactory(string type)
         ret = new TokensGit();
     }else if (type == "svn"){
         ret = new TokensSvn();
+    }else if (type == "diff"){
+        ret = new TokensDiff();
     }
 
     DBG("factory(" << type << ") - ret: " << (long)ret);
@@ -44,8 +46,11 @@ Tokens::Tokens(const char *f_tok,
                int from_orig_pos,
                int from_modif_pos,
                const char *c_tok,
+               int _context_pos,
                const char *a_tok,
-               const char *d_tok) :
+               int _added_pos,
+               const char *d_tok,
+               int _deleted_pos) :
     file_tok(f_tok),
     hunk_tok(h_tok),
     context_tok(c_tok),
@@ -54,38 +59,59 @@ Tokens::Tokens(const char *f_tok,
 
     filename_pos(fname_pos),
     hunk_from_original_pos(from_orig_pos),
-    hunk_from_modified_pos(from_modif_pos){}
+    hunk_from_modified_pos(from_modif_pos),
+    context_pos(_context_pos),
+    added_pos(_added_pos),
+    deleted_pos(_deleted_pos){}
 
-Tokens::token Tokens::match(QString &line) const
+Tokens::token Tokens::match() const
 {
-    if (file_tok.indexIn(line) != -1){
+    if (file_tok.indexIn(_cur_line) != -1){
         return FILE_TOK;
-    }else if (hunk_tok.indexIn(line) != -1){
+    }else if (hunk_tok.indexIn(_cur_line) != -1){
         return HUNK_TOK;
-    }else if (context_tok.indexIn(line) != -1){
+    }else if (context_tok.indexIn(_cur_line) != -1){
         return CONTEXT_TOK;
-    }else if (added_tok.indexIn(line) != -1){
+    }else if (added_tok.indexIn(_cur_line) != -1){
         return ADDED_TOK;
-    }else if (deleted_tok.indexIn(line) != -1){
+    }else if (deleted_tok.indexIn(_cur_line) != -1){
         return DELETED_TOK;
     }
 
     return NONE_TOK;
 }
 
-/* CONCRETE TOKENS: */
+/** Types of input: **/
+
 TokensGit::TokensGit() : Tokens::Tokens("^diff --git a/([^ ]+) b/.*$",
                                         1,
                                         "^@@ -([0-9]+)(,[0-9]+){0,1} \\+([0-9]+)(,[0-9]+){0,1}.*$",
                                         1, 3,
-                                        "^ .*$",
-                                        "^\\+.*$",
-                                        "^-.*$"){}
+                                        "^ (.*)$",
+                                        1,
+                                        "^\\+(.*)$",
+                                        1,
+                                        "^-(.*)$",
+                                        1){}
 
 TokensSvn::TokensSvn() : Tokens::Tokens("^Index: ([^ ]+).*$",
                                         1,
                                         "^@@ -([0-9]+)(,[0-9]+){0,1} \\+([0-9]+)(,[0-9]+){0,1}.*$",
                                         1, 3,
-                                        "^ .*$",
-                                        "^\\+.*$",
-                                        "^-.*$"){}
+                                        "^ (.*)$",
+                                        1,
+                                        "^\\+(.*)$",
+                                        1,
+                                        "^-(.*)$",
+                                        1){}
+
+TokensDiff::TokensDiff() : Tokens::Tokens("^diff -r[a-zA-Z]* ([^ ]+ [^ ]+).*$",
+                                          1,
+                                          "^([0-9]+)(,[0-9]+){0,1}[a-zA-Z]?([0-9]+)(,[0-9]+){0,1}.*$",
+                                          1, 3,
+                                          "^ (.*)$",
+                                          1,
+                                          "^>(.*)$",
+                                          1,
+                                          "^<.(*$)",
+                                          1){}

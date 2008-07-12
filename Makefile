@@ -5,7 +5,7 @@ ifeq ($(DESTDIR),)
 DESTDIR = /usr/local/bin
 endif
 
-DEBUGFLAGS =
+DEBUGFLAGS = -DNDEBUG
 #DEBUGFLAGS = -g
 CXXFLAGS += -Wall -Wno-long-long -pedantic $(DEBUGFLAGS)
 

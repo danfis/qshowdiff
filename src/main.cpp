@@ -33,6 +33,8 @@
 using std::string;
 
 
+void usage(int argc, char *argv[]);
+
 int main(int argc, char *argv[])
 {
     MILESTONE("");
@@ -40,19 +42,22 @@ int main(int argc, char *argv[])
 
     string input_type;
 
-    if (argc != 2){
-        std::cerr << "Error: At least one argument must be given." << std::endl;
-        return 1;
+    if (argc == 1){
+        input_type = "git";
+    }else if (argc == 2){
+        input_type = argv[1];
+    }else{
+        usage(argc, argv);
+        return -1;
     }
-
-    input_type = argv[1];
 
     try{
         Parser parser(input_type, new QTextStream(stdin));
         parser.parse();
     }catch(ParserException &e){
-        std::cerr << "Error: Parser can't parse this type of input." << std::endl;
-        return 1;
+        std::cerr << "Error: Unknown type of input." << std::endl;
+        usage(argc, argv);
+        return -1;
     }
 
     DBG("Detaching from console.");
@@ -71,3 +76,13 @@ int main(int argc, char *argv[])
     MILESTONE("====== FINISH QSHOWDIFF ======");
     MILESTONE("");
 }
+
+void usage(int argc, char *argv[])
+{
+    std::cerr << "Usage: " << argv[0] << " [ type ]" << std::endl;
+    std::cerr << std::endl;
+    std::cerr << "  Types can be: git (default)" << std::endl;
+    std::cerr << "                svn" << std::endl;
+    std::cerr << "                diff" << std::endl;
+}
+

@@ -72,10 +72,7 @@ void Parser::_start()
 
 void Parser::_file()
 {
-    _finishHunk();
-
     if (_current_token == Tokens::FILE_TOK){
-        _finishFile();
         _createNewFile();
         _readNextLine();
     }else if (_current_token == Tokens::HUNK_TOK){
@@ -91,6 +88,9 @@ void Parser::_hunk()
         case Tokens::HUNK_TOK:
             _createNewHunk();
             _readNextLine();
+            break;
+        case Tokens::FILE_TOK:
+            _changeState(FILE_STATE);
             break;
         case Tokens::ADDED_TOK:
             _changeState(ADDED_STATE);
@@ -116,11 +116,9 @@ void Parser::_context()
 
         switch (_current_token){
             case Tokens::FILE_TOK:
-                _finishFile();
                 _changeState(FILE_STATE);
                 break;
             case Tokens::HUNK_TOK:
-                _finishHunk();
                 _changeState(HUNK_STATE);
                 break;
             case Tokens::ADDED_TOK:
@@ -147,11 +145,9 @@ void Parser::_added()
 
         switch (_current_token){
             case Tokens::FILE_TOK:
-                _finishFile();
                 _changeState(FILE_STATE);
                 break;
             case Tokens::HUNK_TOK:
-                _finishHunk();
                 _changeState(HUNK_STATE);
                 break;
             case Tokens::CONTEXT_TOK:
@@ -175,11 +171,9 @@ void Parser::_deleted()
 
         switch (_current_token){
             case Tokens::FILE_TOK:
-                _finishFile();
                 _changeState(FILE_STATE);
                 break;
             case Tokens::HUNK_TOK:
-                _finishHunk();
                 _changeState(HUNK_STATE);
                 break;
             case Tokens::CONTEXT_TOK:
@@ -204,11 +198,9 @@ void Parser::_changed()
 
         switch (_current_token){
             case Tokens::FILE_TOK:
-                _finishFile();
                 _changeState(FILE_STATE);
                 break;
             case Tokens::HUNK_TOK:
-                _finishHunk();
                 _changeState(HUNK_STATE);
                 break;
             case Tokens::CONTEXT_TOK:
@@ -226,8 +218,6 @@ void Parser::_end()
     _finishChanged();
     _finishAdded();
     _finishDeleted();
-    _finishHunk();
-    _finishFile();
 
     _changeState(END_STATE);
 }
@@ -243,7 +233,8 @@ void Parser::_readNextLine()
         return;
     }
 
-    _current_token = _tokens->match(_current_line);
+    _tokens->setCurrentLine(_current_line);
+    _current_token = _tokens->match();
     DBG("Read line \"" << _current_line.toStdString() << "\" --> current token:" << _current_token);
 }
 
@@ -283,70 +274,32 @@ void Parser::_changeState(Parser::states new_state)
 }
 
 
-QString Parser::_capCurrentLine(int cap)
-{
-    switch (_current_token){
-        case Tokens::FILE_TOK:
-            return _tokens->file_tok.cap(cap);
-        case Tokens::HUNK_TOK:
-            return _tokens->hunk_tok.cap(cap);
-        case Tokens::CONTEXT_TOK:
-            return _tokens->context_tok.cap(cap);
-        case Tokens::ADDED_TOK:
-            return _tokens->added_tok.cap(cap);
-        case Tokens::DELETED_TOK:
-            return _tokens->deleted_tok.cap(cap);
-        case Tokens::NONE_TOK:
-            return "";
-    }
-    return "";
-}
 
 void Parser::_createNewFile()
 {
-    int pos;
-
-    if (_cur_file != NULL){
-        DBG("Can't create new file - _cur_file = " << (long)_cur_file);
-        return;
-    }
-
-    pos = _tokens->getFilenamePos();
-    Diff::instance()->addFile(_cur_file = new File(_capCurrentLine(pos)));
-}
-void Parser::_finishFile()
-{
-    _cur_file = NULL;
+    _cur_file = new File(_tokens->getFilename());
+    Diff::instance()->addFile(_cur_file);
 }
 
 void Parser::_createNewHunk()
 {
-    int pos1, pos2;
-    int from1, from2;
+    std::pair<int, int> from;
 
-    if (_cur_file == NULL || _cur_hunk != NULL){
-        DBG("Can't create new hunk - _cur_hunk = " << (long)_cur_hunk
-                << ", _cur_file = " << (long)_cur_file);
-        return;
+    if (_cur_file == NULL){
+        _cur_file = new File("Unknown");
+        Diff::instance()->addFile(_cur_file);
     }
 
-    pos1 = _tokens->getHunkFromOriginalPos();
-    pos2 = _tokens->getHunkFromModifiedPos();
-    from1 = _capCurrentLine(pos1).toInt();
-    from2 = _capCurrentLine(pos2).toInt();
-
-    _cur_file->addHunk(_cur_hunk = new Hunk(from1, from2));
-}
-void Parser::_finishHunk()
-{
-    _cur_hunk = NULL;
+    from = _tokens->getHunkNums();
+    _cur_hunk = new Hunk(from.first, from.second);
+    _cur_file->addHunk(_cur_hunk);
 }
 
 void Parser::_addCurrentLineToContext()
 {
     //if (_cur_context == NULL)
     //    _cur_context = new Text();
-    _cur_context.addLine(new QString(_current_line.remove(0,1)));
+    _cur_context.addLine(new QString(_tokens->getContext()));
 }
 void Parser::_finishContext()
 {
@@ -360,7 +313,7 @@ void Parser::_addCurrentLineToAdded()
 {
     //if (_cur_added == NULL)
     //    _cur_added = new Text();
-    _cur_added.addLine(new QString(_current_line.remove(0,1)));
+    _cur_added.addLine(new QString(_tokens->getAdded()));
 }
 void Parser::_finishAdded()
 {
@@ -375,7 +328,7 @@ void Parser::_addCurrentLineToDeleted()
 {
     //if (_cur_deleted == NULL)
     //    _cur_deleted = new Text();
-    _cur_deleted.addLine(new QString(_current_line.remove(0,1)));
+    _cur_deleted.addLine(new QString(_tokens->getDeleted()));
 }
 void Parser::_finishDeleted()
 {

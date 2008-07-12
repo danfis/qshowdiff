@@ -62,13 +62,10 @@ class Parser{
 
     void _changeState(states);
     void _readNextLine();
-    QString _capCurrentLine(int);
 
     void _createNewFile();
-    void _finishFile();
 
     void _createNewHunk();
-    void _finishHunk();
 
     void _addCurrentLineToContext();
     void _finishContext();
