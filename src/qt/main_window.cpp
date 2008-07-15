@@ -51,6 +51,8 @@ MainWindow::MainWindow()
 
     connect(_file_list, SIGNAL(currentRowChanged(int)), _diff_view_frame,
             SLOT(changeFile(int)));
+
+    resize(800, 600);
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e)
