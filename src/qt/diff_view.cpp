@@ -217,6 +217,7 @@ void DiffView::_paintLine(const TextSnippets &ts, int from_line)
     int left = text_rect.left();
     int width;
     QString str;
+    QRect rect;
 
     // paint lines only if they are in viewport!
     if (region->intersects(line_rect) || region->intersects(text_rect)){
@@ -243,7 +244,6 @@ void DiffView::_paintLine(const TextSnippets &ts, int from_line)
                     width = metrics.width(str);
                     text_rect.setLeft(left);
                     text_rect.setWidth(width);
-                    left += width;
 
                     painter->setFont(Settings::Text::font);
                     painter->setPen(Settings::Text::font_color);
@@ -255,7 +255,6 @@ void DiffView::_paintLine(const TextSnippets &ts, int from_line)
                     width = metrics_ins.width(str);
                     text_rect.setLeft(left);
                     text_rect.setWidth(width);
-                    left += width;
 
                     painter->setPen(Settings::Text::background_color_changed);
                     painter->setBrush(Settings::Text::brush_insertion);
@@ -270,7 +269,6 @@ void DiffView::_paintLine(const TextSnippets &ts, int from_line)
                     width = metrics_subs.width(str);
                     text_rect.setLeft(left);
                     text_rect.setWidth(width);
-                    left += width;
 
                     painter->setPen(Settings::Text::background_color_changed);
                     painter->setBrush(Settings::Text::brush_substitution);
@@ -285,13 +283,13 @@ void DiffView::_paintLine(const TextSnippets &ts, int from_line)
                     width = metrics.width(str);
                     text_rect.setLeft(left);
                     text_rect.setWidth(width);
-                    left += width;
 
                     painter->setFont(Settings::Text::font);
                     painter->setPen(Settings::Text::font_color);
                     break;
             }
-            painter->drawText(text_rect, Qt::AlignLeft, str);
+            painter->drawText(text_rect, Qt::AlignLeft, str, &rect);
+            left += rect.width();
         }
     }
 
