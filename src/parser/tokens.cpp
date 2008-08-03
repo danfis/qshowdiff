@@ -23,18 +23,23 @@
 #include "tokens.h"
 using std::string;
 
+TokensType all_tokens[] = {
+    { "git",  TokensGit::instance },
+    { "svn",  TokensSvn::instance },
+    { "diff", TokensDiff::instance },
+    { "bzr",  TokensBzr::instance },
+    { 0, 0 }
+};
+
 Tokens *TokenFactory(string type)
 {
     Tokens *ret = NULL;
 
-    if (type == "git"){
-        ret = new TokensGit();
-    }else if (type == "svn"){
-        ret = new TokensSvn();
-    }else if (type == "diff"){
-        ret = new TokensDiff();
-    }else if (type == "bzr"){
-        ret = new TokensBzr();
+    for (int i=0; all_tokens[i].name != 0; i++){
+        if (type.compare(all_tokens[i].name) == 0){
+            ret = all_tokens[i].instance();
+            break;
+        }
     }
 
     DBG("factory(" << type << ") - ret: " << (long)ret);

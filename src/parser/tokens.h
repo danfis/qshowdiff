@@ -28,6 +28,15 @@
 
 #include "../debug.h"
 
+class Tokens;
+
+struct TokensType {
+    const char *name;
+    Tokens *(*instance)();
+};
+
+extern TokensType all_tokens[];
+
 class Tokens{
   protected:
     /*{*/
@@ -108,20 +117,24 @@ Tokens *TokenFactory(std::string);
 class TokensGit : public Tokens{
   public:
     TokensGit();
+    static Tokens *instance() { return new TokensGit(); }
 };
 
 class TokensSvn : public Tokens{
   public:
     TokensSvn();
+    static Tokens *instance() { return new TokensSvn(); }
 };
 
 class TokensDiff : public Tokens{
   public:
     TokensDiff();
+    static Tokens *instance() { return new TokensDiff(); }
 };
 
 class TokensBzr : public Tokens{
   public:
     TokensBzr();
+    static Tokens *instance() { return new TokensBzr(); }
 };
 #endif

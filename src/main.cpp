@@ -82,10 +82,17 @@ int main(int argc, char *argv[])
 
 void usage(int argc, char *argv[])
 {
+    std::string def(DEFAULT_TYPE);
+
     std::cerr << "Usage: " << argv[0] << " [ type ]" << std::endl;
     std::cerr << std::endl;
-    std::cerr << "  Types can be: git (default)" << std::endl;
-    std::cerr << "                svn" << std::endl;
-    std::cerr << "                diff" << std::endl;
+    std::cerr << "  Types can be:" << std::endl;
+
+    for (int i=0; all_tokens[i].name != 0; i++){
+        std::cerr << "      " << all_tokens[i].name;
+        if (def.compare(all_tokens[i].name) == 0)
+            std::cerr << " (default)";
+        std::cerr << std::endl;
+    }
 }
 
