@@ -119,4 +119,9 @@ class TokensDiff : public Tokens{
   public:
     TokensDiff();
 };
+
+class TokensBzr : public Tokens{
+  public:
+    TokensBzr();
+};
 #endif

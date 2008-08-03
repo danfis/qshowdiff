@@ -33,6 +33,8 @@ Tokens *TokenFactory(string type)
         ret = new TokensSvn();
     }else if (type == "diff"){
         ret = new TokensDiff();
+    }else if (type == "bzr"){
+        ret = new TokensBzr();
     }
 
     DBG("factory(" << type << ") - ret: " << (long)ret);
@@ -115,3 +117,15 @@ TokensDiff::TokensDiff() : Tokens::Tokens("^diff -r[a-zA-Z]* ([^ ]+ [^ ]+).*$",
                                           1,
                                           "^<.(*$)",
                                           1){}
+
+TokensBzr::TokensBzr() : Tokens::Tokens("^=== (added|removed|modified) file '([^']*)'.*$",
+                                        2,
+                                        "^@@ -([0-9]+)(,[0-9]+){0,1} \\+([0-9]+)(,[0-9]+){0,1}.*$",
+                                        1, 3,
+                                        "^ (.*)$",
+                                        1,
+                                        "^\\+(.*)$",
+                                        1,
+                                        "^-(.*)$",
+                                        1){}
+
