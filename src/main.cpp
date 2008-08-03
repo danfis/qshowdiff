@@ -32,6 +32,9 @@
 
 using std::string;
 
+#ifndef DEFAULT_TYPE
+# define DEFAULT_TYPE "git"
+#endif
 
 void usage(int argc, char *argv[]);
 
@@ -43,7 +46,7 @@ int main(int argc, char *argv[])
     string input_type;
 
     if (argc == 1){
-        input_type = "git";
+        input_type = DEFAULT_TYPE;
     }else if (argc == 2){
         input_type = argv[1];
     }else{

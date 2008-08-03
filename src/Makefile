@@ -14,12 +14,16 @@ PARSER_OBJS = parser.o tokens.o
 OBJS_TMP = main.o settings.o $(DIFF_OBJS) $(QT_OBJS) $(PARSER_OBJS)
 OBJS = $(foreach file, $(OBJS_TMP), objs/$(file))
 
+DEFAULT_TYPE ?= git
 
 all: $(TARGETS)
 
 qshowdiff: $(OBJS)
 	$(CC) $(CXXFLAGS) -o $@ $(OBJS) $(LDFLAGS)
 
+
+objs/main.o: main.cpp
+	$(CC) $(CXXFLAGS) -DDEFAULT_TYPE=\"$(DEFAULT_TYPE)\" -c -o $@ $<
 
 objs/%.o: %.cpp %.h
 	$(CC) $(CXXFLAGS) -c -o $@ $<
