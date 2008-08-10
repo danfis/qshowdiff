@@ -15,6 +15,7 @@ QT_CFLAGS = $(shell pkg-config QtCore QtGui --cflags)
 QT_LIBS = $(shell pkg-config QtCore QtGui --libs)
 
 DEFAULT_TYPE ?= git
+DEFAULT_CODEC ?= DEFAULT
 
 # export variables for sub-makes
 export CC
@@ -23,6 +24,7 @@ export CXXFLAGS
 export QT_CFLAGS
 export QT_LIBS
 export DEFAULT_TYPE
+export DEFAULT_CODEC
 
 all: prepare
 	cd src && $(MAKE) all

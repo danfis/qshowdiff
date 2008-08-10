@@ -12,9 +12,14 @@ Compilation and Installation
 ----------------------------
 For compilation just type:
     make
+
 If you want to change default type of parsed diff (git) you can specify it
 by setting variable DEFAULT_TYPE in make command. For example:
     make DEFAULT_TYPE=svn
+
+If you want to change default codec used by Qt library. Set up
+DEFAULT_CODEC variable in make command. For example:
+	make DEFAULT_CODEC=utf-8
 
 For installation to /usr/local/bin type:
     sudo make install

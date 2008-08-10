@@ -2,6 +2,14 @@ CXXFLAGS += $(QT_CFLAGS)
 CXXFLAGS += -Lobjs
 LDFLAGS += $(QT_LIBS)
 
+DEFAULT_TYPE ?= git
+DEFAULT_CODEC ?= DEFAULT
+
+CXXFLAGS += -DDEFAULT_TYPE=\"$(DEFAULT_TYPE)\"
+ifneq '$(DEFAULT_CODEC)' 'DEFAULT'
+  CXXFLAGS += -DDEFAULT_CODEC=\"$(DEFAULT_CODEC)\"
+endif
+
 VPATH = diff qt parser
 
 TARGETS = qshowdiff
@@ -14,8 +22,6 @@ PARSER_OBJS = parser.o tokens.o
 OBJS_TMP = main.o settings.o $(DIFF_OBJS) $(QT_OBJS) $(PARSER_OBJS)
 OBJS = $(foreach file, $(OBJS_TMP), objs/$(file))
 
-DEFAULT_TYPE ?= git
-
 all: $(TARGETS)
 
 qshowdiff: $(OBJS)
@@ -23,7 +29,7 @@ qshowdiff: $(OBJS)
 
 
 objs/main.o: main.cpp
-	$(CC) $(CXXFLAGS) -DDEFAULT_TYPE=\"$(DEFAULT_TYPE)\" -c -o $@ $<
+	$(CC) $(CXXFLAGS) -c -o $@ $<
 
 objs/%.o: %.cpp %.h
 	$(CC) $(CXXFLAGS) -c -o $@ $<

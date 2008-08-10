@@ -22,6 +22,7 @@
 
 #include <iostream>
 #include <QApplication>
+#include <QTextCodec>
 #include <unistd.h>
 
 #include "diff/diff.h"
@@ -43,6 +44,15 @@ int main(int argc, char *argv[])
     MILESTONE("");
     MILESTONE("====== START QSHOWDIFF ======");
 
+#ifdef DEFAULT_CODEC
+    /* Set up codec manualy */
+    QTextCodec *codec = QTextCodec::codecForName(DEFAULT_CODEC);
+    DBG("Codec: " << (const char *)codec->name());
+    QTextCodec::setCodecForCStrings(codec);
+    QTextCodec::setCodecForLocale(codec);
+    QTextCodec::setCodecForTr(codec);
+#endif
+
     string input_type;
 
     if (argc == 1){
@@ -55,8 +65,10 @@ int main(int argc, char *argv[])
     }
 
     try{
-        Parser parser(input_type, new QTextStream(stdin));
+        QTextStream *in = new QTextStream(stdin);
+        Parser parser(input_type, in);
         parser.parse();
+        delete in;
     }catch(ParserException &e){
         std::cerr << "Error: Unknown type of input." << std::endl;
         usage(argc, argv);
