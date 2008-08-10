@@ -63,11 +63,13 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+#ifdef NDEBUG
     DBG("Detaching from console.");
     if (daemon(0,0) != 0){
         std::cerr << "Error: Detaching failed. Proceeding without "
                      "detaching." << std::endl;
     }
+#endif
 
     QApplication app(argc, argv);
 
