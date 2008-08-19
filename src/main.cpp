@@ -24,6 +24,7 @@
 #include <QApplication>
 #include <QTextCodec>
 #include <unistd.h>
+#include <stdlib.h>
 
 #include "diff/diff.h"
 #include "diff/text.h"
@@ -39,19 +40,45 @@ using std::string;
 
 void usage(int argc, char *argv[]);
 
+char *codecPart(char *str);
+
 int main(int argc, char *argv[])
 {
     MILESTONE("");
     MILESTONE("====== START QSHOWDIFF ======");
 
+    QTextCodec *codec = 0;
+
 #ifdef DEFAULT_CODEC
     /* Set up codec manualy */
-    QTextCodec *codec = QTextCodec::codecForName(DEFAULT_CODEC);
+    codec = QTextCodec::codecForName(DEFAULT_CODEC);
+#else /* DEFAULT_CODEC */
+    char *var = NULL;
+    codec = 0;
+
+    var = getenv("LC_ALL");
+    if (var == NULL || strlen(var) <= 0)
+        var = getenv("LC_CTYPE");
+    if (var == NULL || strlen(var) <= 0)
+        var = getenv("LANG");
+
+    if (var != NULL){
+        var = codecPart(var);
+        codec = QTextCodec::codecForName(var);
+
+        DBG("Detected codec: '" << var << "'");
+    }
+
+    if (codec == 0){
+        DBG("Previously detected codec wasn't accepted. Falling to codecForLocale.");
+        codec = QTextCodec::codecForLocale();
+    }
+#endif /* DEFAULT_CODEC */
+
     DBG("Codec: " << (const char *)codec->name());
     QTextCodec::setCodecForCStrings(codec);
     QTextCodec::setCodecForLocale(codec);
     QTextCodec::setCodecForTr(codec);
-#endif
 
     string input_type;
 
@@ -110,3 +137,16 @@ void usage(int argc, char *argv[])
     }
 }
 
+char *codecPart(char *str)
+{
+    char *c;
+
+    c = str;
+    while (*c != 0 && *c != '.')
+        c++;
+    if (*c == '.' && *++c != 0){
+        return c;
+    }else{
+        return str;
+    }
+}
