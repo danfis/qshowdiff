@@ -5,6 +5,7 @@ DESTDIR ?= /usr/local/bin
 
 ifeq ($(DEBUG), yes)
   DEBUGFLAGS = -g
+  CXXFLAGS =
 else
   DEBUGFLAGS = -DNDEBUG
 endif
