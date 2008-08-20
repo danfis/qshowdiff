@@ -26,12 +26,13 @@
 #ifndef _DEBUG_H_
 #define _DEBUG_H_
 
-/**
- * header files
- */
-#ifndef NDEBUG
-    #include <iostream>
-#endif
+#include <iostream>
+
+#define DEBUG_HELPER(msg, type) \
+    std::cerr << type << ": " << msg << std::endl; \
+    std::cerr.flush()
+
+#define ERROR(msg) DEBUG_HELPER(msg, "Error")
 
 /**
  * TODO: Colored output
@@ -39,23 +40,11 @@
  * ERROR("error" << "message");
  */
 #ifndef NDEBUG
-/*
-    #define DEBUG_HELPER(msg, type) \
-        std::cerr << __FILE__ << ": " << __LINE__ << ": " << type << ": " \
-                  << msg << std::endl; \
-        std::cerr.flush()
-        */
-    #define DEBUG_HELPER(msg, type) \
-        std::cerr << msg << std::endl; \
-        std::cerr.flush()
     #define DBG(msg) DEBUG_HELPER(msg, "Debug")
-    #define ERROR(msg) DEBUG_HELPER(msg, "Error")
     #define WARNING(msg) DEBUG_HELPER(msg, "Warning")
     #define MILESTONE(msg) DEBUG_HELPER(msg, "Milestone")
 #else
-    #define DEBUG_HELPER(msg, type)
     #define DBG(msg)
-    #define ERROR(msg, type)
     #define WARNING(msg, type)
     #define MILESTONE(msg)
 #endif

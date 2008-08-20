@@ -23,9 +23,13 @@
 #include <iostream>
 #include <QApplication>
 #include <QTextCodec>
+#include <QList>
+#include <QByteArray>
 #include <unistd.h>
 #include <stdlib.h>
+#include <getopt.h>
 
+#include "debug.h"
 #include "diff/diff.h"
 #include "diff/text.h"
 #include "qt/main_window.h"
@@ -39,39 +43,80 @@ using std::string;
 #endif
 
 void usage(int argc, char *argv[]);
-
 char *codecPart(char *str);
+void availableCodecs();
+
+enum options_enum {
+    HELP = 'h',
+    TEXT_CODEC,
+    AVAILABLE_CODECS
+};
+
+static struct option options[] = {
+    { "help", no_argument, NULL, HELP },
+
+    { "text-codec", required_argument, NULL, TEXT_CODEC },
+    { "available-codecs", no_argument, NULL, AVAILABLE_CODECS },
+    { NULL, 0, NULL, 0}
+};
 
 int main(int argc, char *argv[])
 {
+    int c, option_index;
+    QTextCodec *codec = 0;
+    string input_type;
+
     MILESTONE("");
     MILESTONE("====== START QSHOWDIFF ======");
 
-    QTextCodec *codec = 0;
-
-#ifdef DEFAULT_CODEC
-    /* Set up codec manualy */
-    codec = QTextCodec::codecForName(DEFAULT_CODEC);
-#else /* DEFAULT_CODEC */
-    char *var = NULL;
-    codec = 0;
-
-    var = getenv("LC_ALL");
-    if (var == NULL || strlen(var) <= 0)
-        var = getenv("LC_CTYPE");
-    if (var == NULL || strlen(var) <= 0)
-        var = getenv("LANG");
-
-    if (var != NULL){
-        var = codecPart(var);
-        codec = QTextCodec::codecForName(var);
-
-        DBG("Detected codec: '" << var << "'");
+    // OPTIONS:
+    while ((c = getopt_long(argc, argv, "h", options, &option_index)) != -1){
+        switch (c){
+            case HELP:
+                usage(argc, argv);
+                return -1;
+                break;
+            case TEXT_CODEC:
+                codec = QTextCodec::codecForName(optarg);
+                if (codec == 0){
+                    ERROR("Uknown text codec: '" << (char *)optarg << "'");
+                    usage(argc, argv);
+                    return -1;
+                }
+                break;
+            case AVAILABLE_CODECS:
+                availableCodecs();
+                return -1;
+            default:
+                usage(argc, argv);
+                return -1;
+        }
     }
 
     if (codec == 0){
-        DBG("Previously detected codec wasn't accepted. Falling to codecForLocale.");
-        codec = QTextCodec::codecForLocale();
+#ifdef DEFAULT_CODEC
+        /* Set up codec manualy */
+        codec = QTextCodec::codecForName(DEFAULT_CODEC);
+#else /* DEFAULT_CODEC */
+        char *var = NULL;
+
+        var = getenv("LC_ALL");
+        if (var == NULL || strlen(var) <= 0)
+            var = getenv("LC_CTYPE");
+        if (var == NULL || strlen(var) <= 0)
+            var = getenv("LANG");
+
+        if (var != NULL){
+            var = codecPart(var);
+            codec = QTextCodec::codecForName(var);
+
+            DBG("Detected codec: '" << var << "'");
+        }
+
+        if (codec == 0){
+            DBG("Previously detected codec wasn't accepted. Falling to codecForLocale.");
+            codec = QTextCodec::codecForLocale();
+        }
     }
 #endif /* DEFAULT_CODEC */
 
@@ -80,12 +125,10 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForLocale(codec);
     QTextCodec::setCodecForTr(codec);
 
-    string input_type;
-
-    if (argc == 1){
+    if (argc - optind == 0){
         input_type = DEFAULT_TYPE;
-    }else if (argc == 2){
-        input_type = argv[1];
+    }else if (argc - optind == 1){
+        input_type = argv[optind];
     }else{
         usage(argc, argv);
         return -1;
@@ -125,7 +168,13 @@ void usage(int argc, char *argv[])
 {
     std::string def(DEFAULT_TYPE);
 
-    std::cerr << "Usage: " << argv[0] << " [ type ]" << std::endl;
+    std::cerr << "Usage: " << argv[0] << "  [ OPTIONS ]  type" << std::endl;
+    std::cerr << std::endl;
+    std::cerr << "  OPTIONS:" << std::endl;
+    std::cerr << "      --text-codec  codec_name  Specify which text codec will be used during reading diff" << std::endl;
+    std::cerr << "                                Available codecs can be found using option --available-codec" << std::endl;
+    std::cerr << "      --available-codecs  Print out all available codecs" << std::endl;
+
     std::cerr << std::endl;
     std::cerr << "  Types can be:" << std::endl;
 
@@ -149,4 +198,17 @@ char *codecPart(char *str)
     }else{
         return str;
     }
+}
+
+void availableCodecs()
+{
+    QList<QByteArray> codecs = QTextCodec::availableCodecs();
+    QList<QByteArray>::iterator it, it_end;
+
+    std::cerr << "Available codecs are:" << std::endl;
+    it = codecs.begin();
+    it_end = codecs.end();
+    for (; it != it_end; ++it)
+        std::cerr << "    " << (const char *)*it << std::endl;
+    std::cerr << std::endl;
 }
