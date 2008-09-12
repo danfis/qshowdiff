@@ -24,7 +24,7 @@
 
 int Settings::max_line_width = 0;
 
-QFont Settings::File::font = QFont("DejaVu Sans");
+QFont Settings::File::font = QFont("DejaVu Sans Mono");
 QColor Settings::File::font_color = QColor(0,0,0);
 QColor Settings::File::background_color = QColor(100,100,100);
 int Settings::File::box_height = 30;
@@ -34,12 +34,12 @@ int Settings::Hunk::separator_height = 5;
 QColor Settings::Hunk::separator_color = QColor(200, 200, 200);
 
 
-QFont Settings::Text::font = QFont("DejaVu Sans");
+QFont Settings::Text::font = QFont("DejaVu Sans Mono");
 QColor Settings::Text::font_color = QColor(0, 0, 0);
 QFontMetrics Settings::Text::font_metrics =
         QFontMetrics(Settings::Text::font);
 
-QFont Settings::Text::font_insertion = QFont("DejaVu Sans", -1,
+QFont Settings::Text::font_insertion = QFont("DejaVu Sans Mono", -1,
                                             QFont::Bold);
 QColor Settings::Text::font_color_insertion = Settings::Text::font_color;
 QBrush Settings::Text::brush_insertion = QBrush(QColor(100,100,100),
