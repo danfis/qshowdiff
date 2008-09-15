@@ -75,6 +75,11 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
             _diff_view_frame->scrollDown(100);
             break;
 
+        case 81:
+        case 113:
+            close();
+            break;
+
         case 16777238: // pgup
             _diff_view_frame->scrollUp(100);
             break;
