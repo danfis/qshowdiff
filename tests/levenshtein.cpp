@@ -1,11 +1,16 @@
-#include <cppu.h>
+#include "cu/cu.h"
+
 #include <vector>
+#include <algorithm>
 #include <iostream>
-#include "text.h"
-#include "levenshtein_table.h"
-#include "levenshtein_distances.h"
 using namespace std;
-void printTable(vector<vector<int> > &table)
+
+#include "diff/text.hpp"
+#include "diff/levenshtein_table.hpp"
+#include "diff/levenshtein_distances.hpp"
+
+/*
+static void printTable(vector<vector<int> > &table)
 {
     int rows = table.size();
     int cols = table[0].size();
@@ -17,7 +22,7 @@ void printTable(vector<vector<int> > &table)
         cout << endl;
     }
 }
-void printTrace(list<pair<int, int> > &trace)
+static void printTrace(list<pair<int, int> > &trace)
 {
     list<pair<int, int> >::const_iterator it = trace.begin();
     list<pair<int, int> >::const_iterator it_end = trace.end();
@@ -26,8 +31,9 @@ void printTrace(list<pair<int, int> > &trace)
     }
     cout << endl;
 }
+*/
 
-void printRanges(vector<range_t> &ranges)
+static void printRanges(vector<range_t> &ranges)
 {
     int len = ranges.size();
     cout << "INSERTION: " << range_t::INSERTION << endl;
@@ -40,15 +46,13 @@ void printRanges(vector<range_t> &ranges)
     }
 }
 
-TEST_CASE(TestCaseLevenshtein);
+static vector<vector<int> > table;
+static list<pair<int, int> > trace;
+static vector<range_t> ranges;
+static QString original;
+static QString modified;
 
-vector<vector<int> > table;
-list<pair<int, int> > trace;
-vector<range_t> ranges;
-QString original;
-QString modified;
-
-void setUp()
+TEST(levenshteinSetUp)
 {
     original = "kitten";
     modified = "sitting";
@@ -116,7 +120,7 @@ void setUp()
     ranges.push_back(range);
 }
 
-void testTable()
+TEST(levenshteinTable)
 {
     LevenshteinTable l_table(original, modified);
     vector<vector<int> > table2;
@@ -128,24 +132,19 @@ void testTable()
     assertEqualsM(trace, trace2, "Incorrect trace back.");
 }
 
-void testRanges()
+TEST(levenshteinRanges)
 {
     LevenshteinTable l_table(original, modified);
     vector<range_t> ranges2;
     l_table.fillRanges(ranges2);
 
-    //printRanges(ranges);
-    //printRanges(ranges2);
+    printRanges(ranges);
+    printRanges(ranges2);
 
     assertEqualsM(ranges.size(), ranges2.size(), "Incorrect size of ranges.");
     int len = ranges.size();
     for (int i=0; i < len; i++){
-        assertTrue(ranges2.end() != std::find(ranges2.begin(), ranges2.end(), ranges[i]));
+        assertTrue(ranges2.end() != std::find(ranges2.begin(), ranges2.end(),
+                                              ranges[i]));
     }
 }
-
-TESTS{
-    REG_TEST(testTable);
-    REG_TEST(testRanges);
-}
-TEST_CASE_END;

@@ -1,13 +1,11 @@
-#include <cppu.h>
+#include "cu/cu.h"
 #include <iostream>
 using namespace std;
 
-#include "text.h"
+#include "diff/text.hpp"
 
-TEST_CASE(TestCaseText);
-
-Text t;
-void setUp()
+static Text t;
+TEST(textSetUp)
 {
 	t.addLine(new QString("Line1"));
 	t.addLine(new QString("Line2"));
@@ -15,7 +13,7 @@ void setUp()
 	t.addLine(new QString("Line4"));
 }
 
-void testAdd()
+TEST(textAdd)
 {
 	Text t2;
 	t2.addLine(new QString("Line1"));
@@ -24,7 +22,7 @@ void testAdd()
 	assertEquals(t2.numLines(), 2);
 }
 
-void testConstruct()
+TEST(textConstruct)
 {
 	Text t2(t);
 	Text *t3 = new Text(t2);
@@ -33,7 +31,7 @@ void testConstruct()
 	delete t4;
 }
 
-void testOperators()
+TEST(textOperators)
 {
 	Text t2;
 	t2 = t;
@@ -42,12 +40,3 @@ void testOperators()
 	Text t3;
 	assertTrue(t != t3);
 }
-
-
-TESTS{
-	REG_TEST(testAdd);
-	REG_TEST(testConstruct);
-	REG_TEST(testOperators);
-}
-TEST_CASE_END;
-

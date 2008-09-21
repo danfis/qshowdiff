@@ -1,23 +1,41 @@
-CXXFLAGS += $(QT_CFLAGS) -I../src -I../src/diff
-LDFLAGS += $(QT_LIBS) -lcppu
+-include ../Makefile.include
 
-TEST_SUITES = text.cpp hunk.cpp diff.cpp levenshtein.cpp
-OBJS_LIST = snippet.o settings.o diff.o levenshtein_table.o levenshtein_distances.o
-OBJS = $(foreach file, $(OBJS_LIST), ../src/objs/$(file))
+CXXFLAGS += $(QT_CFLAGS) -I../src/
+LDFLAGS += $(QT_LIBS) -L../src/diff -ldiff -Lcu/ -lcu
 
-all: run_tests
-run_tests: test
-	-cppu-aggregate ./test
-	@echo
-	@echo -ne "Press key to start valgrind "
-	@read key
-	-valgrind --leak-check=full --show-reachable=yes ./test
+OBJS = diff.o hunk.o levenshtein.o text.o
 
-test: main.cpp $(TEST_SUITES)
-	pwd && $(CC) $(CXXFLAGS) -o $@ $< $(OBJS) $(LDFLAGS)
+CHECK_REG=../../cu/check-regressions
+
+all: test
+
+test: $(OBJS)
+	$(CC) $(CXXCFLAGS) -o $@ main.cpp $^ $(LDFLAGS)
+
+%.o: %.cpp %.hpp
+	$(CC) $(CXXFLAGS) -c -o $@ $<
+%.o: %.cpp
+	$(CC) $(CXXFLAGS) -c -o $@ $<
+
+check: all
+	@echo ""
+	@echo "----------------------------------------";
+	./test
+	@echo "----------------------------------------";
+	@echo "Checking regressions:";
+	./$(CHECK_REG) regressions
+	@echo ""
+
+check-valgrind: all
+	valgrind -q --leak-check=full --show-reachable=yes --trace-children=yes ./test
 
 clean:
-	rm -f test
 	rm -f *.o
+	rm -f objs/*.o
+	rm -f test
+	rm -f tmp.*
+	rm -f regressions/tmp.*
 
-.PHONY: all run_tests
+.PHONY: all clean check check-valgrind
+	
+

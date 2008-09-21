@@ -1,0 +1,14 @@
+INSERTION: 1
+SUBSTITUTION: 3
+type: 3, original: 1, from: 0, length: 1
+type: 3, original: 0, from: 0, length: 1
+type: 3, original: 1, from: 4, length: 1
+type: 3, original: 0, from: 4, length: 1
+type: 1, original: 0, from: 6, length: 1
+INSERTION: 1
+SUBSTITUTION: 3
+type: 3, original: 1, from: 0, length: 1
+type: 3, original: 0, from: 0, length: 1
+type: 3, original: 1, from: 4, length: 1
+type: 3, original: 0, from: 4, length: 1
+type: 1, original: 0, from: 6, length: 1

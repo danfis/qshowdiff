@@ -1,17 +1,22 @@
-#include "text.cpp"
-#include "hunk.cpp"
-#include "diff.cpp"
-#include "levenshtein.cpp"
+#include "cu/cu.h"
 
-TEST_SUITE(TestSuiteAll);
-    REG(TestCaseText);
-    REG(TestCaseHunk);
-    REG(TestCaseDiff);
-    REG(TestCaseLevenshtein);
-TEST_SUITE_END;
+#include "diff.hpp"
+#include "hunk.hpp"
+#include "levenshtein.hpp"
+#include "text.hpp"
+
+TEST_SUITES{
+    TEST_SUITE_ADD(TSDiff),
+    TEST_SUITE_ADD(TSHunk),
+    TEST_SUITE_ADD(TSLevenshtein),
+    TEST_SUITE_ADD(TSText),
+    TEST_SUITES_CLOSURE
+};
 
 int main(int argc, char *argv[])
 {
-	RUN(TestSuiteAll);
-}
+    CU_SET_OUT_PREFIX("regressions/");
+    CU_RUN(argc, argv);
 
+    return 0;
+}

@@ -1,11 +1,11 @@
-#include <cppu.h>
-#include "hunk.h"
+#include "cu/cu.h"
+#include "diff/hunk.hpp"
 
 
-TEST_CASE(TestCaseHunk);
-Text text;
-Text text2;
-void setUp()
+static Text text;
+static Text text2;
+
+TEST(hunkSetUp)
 {
     text.addLine(new QString("Line1"));
     text.addLine(new QString("Line2"));
@@ -20,7 +20,7 @@ void setUp()
     text2.addLine(new QString("L5"));
 }
 
-void testConstructors()
+TEST(hunkConstructors)
 {
     Hunk hunk(100,200);
     Hunk hunk2(hunk);
@@ -37,7 +37,3 @@ void testConstructors()
     assertNotEquals(hunk, hunk4);
 }
 
-TESTS{
-    REG_TEST(testConstructors);
-}
-TEST_CASE_END;
