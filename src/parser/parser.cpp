@@ -226,7 +226,7 @@ void Parser::_end()
 // private:
 void Parser::_readNextLine()
 {
-    _current_line = _in->readLine();
+    _current_line = _in.line();
     if (_current_line.isNull()){
         _changeState(END_STATE);
         _current_token = Tokens::NONE_TOK;

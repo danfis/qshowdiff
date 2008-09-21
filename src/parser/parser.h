@@ -29,6 +29,7 @@
 #include <QTextStream>
 
 #include "tokens.h"
+#include "in.hpp"
 #include "../diff/diff.h"
 
 class ParserException : std::exception {
@@ -51,7 +52,7 @@ class Parser{
     QString _current_line;
     Tokens::token _current_token;
 
-    QTextStream *_in;
+    In &_in;
     Tokens *_tokens;
 
     File *_cur_file;
@@ -84,7 +85,7 @@ class Parser{
     void _changed();
     void _end();
   public:
-    Parser(std::string type, QTextStream *in) :
+    Parser(std::string type, In &in) :
         _current_state(START_STATE),
         _in(in),
         _cur_file(NULL), _cur_hunk(NULL)

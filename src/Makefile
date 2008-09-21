@@ -17,7 +17,7 @@ TARGETS = qshowdiff
 DIFF_OBJS = snippet.o diff.o \
 			levenshtein_table.o levenshtein_distances.o
 QT_OBJS = diff_view.o main_window.o
-PARSER_OBJS = parser.o tokens.o
+PARSER_OBJS = parser.o tokens.o in.o choose_parser.o
 
 OBJS_TMP = main.o settings.o $(DIFF_OBJS) $(QT_OBJS) $(PARSER_OBJS)
 OBJS = $(foreach file, $(OBJS_TMP), objs/$(file))
@@ -32,6 +32,8 @@ objs/main.o: main.cpp
 	$(CC) $(CXXFLAGS) -c -o $@ $<
 
 objs/%.o: %.cpp %.h
+	$(CC) $(CXXFLAGS) -c -o $@ $<
+objs/%.o: %.cpp %.hpp
 	$(CC) $(CXXFLAGS) -c -o $@ $<
 objs/%.o: %.cpp
 	$(CC) $(CXXFLAGS) -c -o $@ $<

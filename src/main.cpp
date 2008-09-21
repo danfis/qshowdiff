@@ -35,6 +35,8 @@
 #include "qt/main_window.h"
 #include "settings.h"
 #include "parser/parser.h"
+#include "parser/in.hpp"
+#include "parser/choose_parser.hpp"
 
 using std::string;
 
@@ -135,10 +137,10 @@ int main(int argc, char *argv[])
     }
 
     try{
-        QTextStream *in = new QTextStream(stdin);
-        Parser parser(input_type, in);
-        parser.parse();
-        delete in;
+        In in(stdin);
+        Parser *parser = chooseParser(in);
+        parser->parse();
+        delete parser;
     }catch(ParserException &e){
         std::cerr << "Error: Unknown type of input." << std::endl;
         usage(argc, argv);
