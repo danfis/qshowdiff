@@ -28,10 +28,12 @@
 #include <vector>
 using std::vector;
 
-#include "../debug.h"
-#include "../settings.h"
-#include "diff_view.h"
-#include "diff_view.moc"
+#include "msg.hpp"
+#include "settings.hpp"
+#include "qt/diff_view.hpp"
+
+
+#include "qt/diff_view.moc"
 
 DiffViewFrame::DiffViewFrame(QWidget *parent) : QWidget(parent)
 {

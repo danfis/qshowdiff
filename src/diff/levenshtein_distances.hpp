@@ -27,8 +27,8 @@
 #include <vector>
 #include <list>
 
-#include "levenshtein_table.h"
-#include "text.h"
+#include "diff/levenshtein_table.hpp"
+#include "diff/text.hpp"
 
 
 /**

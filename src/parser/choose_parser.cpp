@@ -25,7 +25,7 @@ using namespace std;
 
 #include <QRegExp>
 
-#include "choose_parser.hpp"
+#include "parser/choose_parser.hpp"
 
 static QRegExp git("^diff --git.*$");
 static QRegExp bzr("^=== (added|removed|modified) file .*$");

@@ -20,8 +20,8 @@
  * along with QShowDiff.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "snippet.h"
-#include "../debug.h"
+#include "diff/snippet.hpp"
+#include "msg.hpp"
 
 Snippet::Snippet(const Text &text)
 {

@@ -26,8 +26,8 @@
 #include <QString>
 #include <vector>
 
-#include "utils.h"
-#include "levenshtein_table.h"
+#include "diff/utils.hpp"
+#include "diff/levenshtein_table.hpp"
 
 class Text : public VectorOfPointers<QString>{
   public:

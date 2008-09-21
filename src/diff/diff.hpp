@@ -20,33 +20,33 @@
  * along with QShowDiff.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * In this file are placed all macros and stuff for debuging,
- */
-#ifndef _DEBUG_H_
-#define _DEBUG_H_
+#ifndef _DIFF_H_
+#define _DIFF_H_
 
-#include <iostream>
+#include <vector>
+#include <QString>
 
-#define DEBUG_HELPER(msg, type) \
-    std::cerr << type << ": " << msg << std::endl; \
-    std::cerr.flush()
+#include "diff/file.hpp"
+#include "msg.hpp"
 
-#define ERROR(msg) DEBUG_HELPER(msg, "Error")
+class Diff : public VectorOfPointers<File>{
+  private:
+    static Diff diff;
 
-/**
- * TODO: Colored output
- * DBG("error" << "message");
- * ERROR("error" << "message");
- */
-#ifndef NDEBUG
-    #define DBG(msg) DEBUG_HELPER(msg, "Debug")
-    #define WARNING(msg) DEBUG_HELPER(msg, "Warning")
-    #define MILESTONE(msg) DEBUG_HELPER(msg, "Milestone")
-#else
-    #define DBG(msg)
-    #define WARNING(msg, type)
-    #define MILESTONE(msg)
-#endif
+    Diff() : VectorOfPointers<File>(){}
+    Diff(const Diff &d) : VectorOfPointers<File>(d){}
+    Diff &operator=(const Diff &d)
+        { VectorOfPointers<File>::operator=(d); return *this;}
+
+  public:
+    static Diff *instance(){ return &diff; }
+
+    void addFile(File *f){ VectorOfPointers<File>::_add(f); }
+    int numFiles() const { return VectorOfPointers<File>::_size(); }
+    QString getFilename(int pos) const
+        { return VectorOfPointers<File>::_get(pos)->getFilename(); }
+    File const *getFile(int pos) const
+        { return VectorOfPointers<File>::_get(pos); }
+};
 
 #endif

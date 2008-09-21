@@ -20,8 +20,8 @@
  * along with QShowDiff.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "parser.h"
-#include "in.hpp"
+#include "parser/parser.hpp"
+#include "parser/in.hpp"
 
 
 #ifndef _CHOOSE_PARSER_HPP_

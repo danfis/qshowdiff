@@ -29,12 +29,15 @@
 #include <stdlib.h>
 #include <getopt.h>
 
-#include "debug.h"
-#include "diff/diff.h"
-#include "diff/text.h"
-#include "qt/main_window.h"
-#include "settings.h"
-#include "parser/parser.h"
+#include "msg.hpp"
+#include "settings.hpp"
+
+#include "diff/diff.hpp"
+#include "diff/text.hpp"
+
+#include "qt/main_window.hpp"
+
+#include "parser/parser.hpp"
 #include "parser/in.hpp"
 #include "parser/choose_parser.hpp"
 

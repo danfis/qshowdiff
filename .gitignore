@@ -1,8 +1,9 @@
 *.o
+*.a
+*.moc
 tests/*.o
 tests/test
 qshowdiff
 doc/*.png
 *~
-src/qt/*.moc
 

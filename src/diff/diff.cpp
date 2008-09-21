@@ -20,7 +20,7 @@
  * along with QShowDiff.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "diff.h"
+#include "diff/diff.hpp"
 
 // static member
 Diff Diff::diff;

@@ -20,23 +20,36 @@
  * along with QShowDiff.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MAIN_WINDOW_H_
-#define _MAIN_WINDOW_H_
+/**
+ * In this file are placed all macros and stuff for debuging,
+ */
+#ifndef _MSG_HPP_
+#define _MSG_HPP_
 
-#include <QMainWindow>
-#include <QKeyEvent>
-#include <QListWidget>
-#include "../diff/diff.h"
-#include "diff_view.h"
+#include <iostream>
 
-class MainWindow : public QMainWindow{
-  private:
-    DiffViewFrame *_diff_view_frame;
-    QListWidget *_file_list;
+#define MSG(msg) \
+    std::cerr << msg << std::endl
 
-  public:
-    MainWindow();
+#define DEBUG_HELPER(msg, type) \
+    std::cerr << type << ": " << msg << std::endl; \
+    std::cerr.flush()
 
-    void keyPressEvent(QKeyEvent *e);
-};
+#define ERROR(msg) DEBUG_HELPER(msg, "Error")
+
+/**
+ * TODO: Colored output
+ * DBG("error" << "message");
+ * ERROR("error" << "message");
+ */
+#ifndef NDEBUG
+    #define DBG(msg) DEBUG_HELPER(msg, "Debug")
+    #define WARNING(msg) DEBUG_HELPER(msg, "Warning")
+    #define MILESTONE(msg) DEBUG_HELPER(msg, "Milestone")
+#else
+    #define DBG(msg)
+    #define WARNING(msg, type)
+    #define MILESTONE(msg)
+#endif
+
 #endif

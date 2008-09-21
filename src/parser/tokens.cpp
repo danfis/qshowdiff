@@ -20,7 +20,7 @@
  * along with QShowDiff.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tokens.h"
+#include "parser/tokens.hpp"
 using std::string;
 
 TokensType all_tokens[] = {

@@ -20,32 +20,23 @@
  * along with QShowDiff.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _FILE_H_
-#define _FILE_H_
+#ifndef _MAIN_WINDOW_H_
+#define _MAIN_WINDOW_H_
 
-#include <vector>
-#include <QString>
+#include <QMainWindow>
+#include <QKeyEvent>
+#include <QListWidget>
+#include "diff/diff.hpp"
+#include "qt/diff_view.hpp"
 
-#include "hunk.h"
-
-class File : public VectorOfPointers<Hunk>{
+class MainWindow : public QMainWindow{
   private:
-    QString _filename;
+    DiffViewFrame *_diff_view_frame;
+    QListWidget *_file_list;
 
-    void _copy(const File &f){ _filename = f._filename; }
   public:
-    File(const char *filename) : _filename(filename){}
-    File(const QString &filename) : _filename(filename){}
-    File(const File &f) : VectorOfPointers<Hunk>(f){ _copy(f);}
-    ~File(){}
-    File &operator=(const File &f){ VectorOfPointers<Hunk>::operator=(f); _copy(f); return *this;}
+    MainWindow();
 
-    void addHunk(Hunk *h){ VectorOfPointers<Hunk>::_add(h);}
-    int numHunks() const { return VectorOfPointers<Hunk>::_size();}
-
-    /**
-     * Return filename.
-     */
-    const QString &getFilename() const { return _filename; }
+    void keyPressEvent(QKeyEvent *e);
 };
 #endif

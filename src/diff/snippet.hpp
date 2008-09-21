@@ -23,8 +23,8 @@
 #ifndef _SNIPPET_H_
 #define _SNIPPET_H_
 
-#include "text.h"
-#include "levenshtein_distances.h"
+#include "diff/text.hpp"
+#include "diff/levenshtein_distances.hpp"
 
 /**
  * Example how diff will be parsed to Snippets:

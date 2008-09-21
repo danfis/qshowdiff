@@ -26,7 +26,7 @@
 #include <QWidget>
 #include <QSplitter>
 #include <QScrollArea>
-#include "../diff/diff.h"
+#include "diff/diff.hpp"
 
 class DiffView;
 

@@ -20,14 +20,14 @@
  * along with QShowDiff.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _SETTINGS_H_
-#define _SETTINGS_H_
+#ifndef _SETTINGS_HPP_
+#define _SETTINGS_HPP_
 
 #include <QFont>
 #include <QFontMetrics>
 #include <QColor>
 #include <QBrush>
-#include "debug.h"
+#include "msg.hpp"
 
 struct Settings{
     static int max_line_width;

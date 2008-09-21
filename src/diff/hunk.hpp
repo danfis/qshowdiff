@@ -25,8 +25,8 @@
 
 #include <vector>
 
-#include "snippet.h"
-#include "utils.h"
+#include "diff/snippet.hpp"
+#include "diff/utils.hpp"
 
 
 /**

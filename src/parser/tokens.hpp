@@ -26,7 +26,7 @@
 #include <QRegExp>
 #include <string>
 
-#include "../debug.h"
+#include "msg.hpp"
 
 class Tokens;
 

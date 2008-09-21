@@ -1,51 +1,35 @@
-CXXFLAGS += $(QT_CFLAGS)
-CXXFLAGS += -Lobjs
-LDFLAGS += $(QT_LIBS)
+-include ../Makefile.include
 
-DEFAULT_TYPE ?= git
-DEFAULT_CODEC ?= DEFAULT
+CXXFLAGS += $(QT_CFLAGS) -I./
+LDFLAGS += $(QT_LIBS) \
+           -Lqt/ -lqt \
+           -Lparser/ -lparser \
+           -Ldiff/ -ldiff
 
-CXXFLAGS += -DDEFAULT_TYPE=\"$(DEFAULT_TYPE)\"
-ifneq '$(DEFAULT_CODEC)' 'DEFAULT'
-  CXXFLAGS += -DDEFAULT_CODEC=\"$(DEFAULT_CODEC)\"
-endif
-
-VPATH = diff qt parser
 
 TARGETS = qshowdiff
 
-DIFF_OBJS = snippet.o diff.o \
-			levenshtein_table.o levenshtein_distances.o
-QT_OBJS = diff_view.o main_window.o
-PARSER_OBJS = parser.o tokens.o in.o choose_parser.o
-
-OBJS_TMP = main.o settings.o $(DIFF_OBJS) $(QT_OBJS) $(PARSER_OBJS)
-OBJS = $(foreach file, $(OBJS_TMP), objs/$(file))
+OBJS = settings.o main.o
 
 all: $(TARGETS)
 
 qshowdiff: $(OBJS)
+	$(MAKE) -C diff
+	$(MAKE) -C parser
+	$(MAKE) -C qt
 	$(CC) $(CXXFLAGS) -o $@ $(OBJS) $(LDFLAGS)
 
-
-objs/main.o: main.cpp
+%.o: %.cpp %.hpp
+	$(CC) $(CXXFLAGS) -c -o $@ $<
+%.o: %.cpp
 	$(CC) $(CXXFLAGS) -c -o $@ $<
 
-objs/%.o: %.cpp %.h
-	$(CC) $(CXXFLAGS) -c -o $@ $<
-objs/%.o: %.cpp %.hpp
-	$(CC) $(CXXFLAGS) -c -o $@ $<
-objs/%.o: %.cpp
-	$(CC) $(CXXFLAGS) -c -o $@ $<
-	
-qt/diff_view.cpp: qt/diff_view.moc
-qt/diff_view.moc: qt/diff_view.h
-	$(MOC) -p'.' $< > $@
 
 clean:
-	rm -f objs/*.o
+	$(MAKE) -C diff clean
+	$(MAKE) -C parser clean
+	$(MAKE) -C qt clean
 	rm -f $(TARGETS)
-	rm -f *.moc
-	rm -f */*.moc
+	rm -f *.o
 
 .PHONY: all clean

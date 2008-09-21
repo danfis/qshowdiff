@@ -20,33 +20,32 @@
  * along with QShowDiff.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _DIFF_H_
-#define _DIFF_H_
+#ifndef _FILE_H_
+#define _FILE_H_
 
 #include <vector>
 #include <QString>
 
-#include "file.h"
-#include "../debug.h"
+#include "diff/hunk.hpp"
 
-class Diff : public VectorOfPointers<File>{
+class File : public VectorOfPointers<Hunk>{
   private:
-    static Diff diff;
+    QString _filename;
 
-    Diff() : VectorOfPointers<File>(){}
-    Diff(const Diff &d) : VectorOfPointers<File>(d){}
-    Diff &operator=(const Diff &d)
-        { VectorOfPointers<File>::operator=(d); return *this;}
-
+    void _copy(const File &f){ _filename = f._filename; }
   public:
-    static Diff *instance(){ return &diff; }
+    File(const char *filename) : _filename(filename){}
+    File(const QString &filename) : _filename(filename){}
+    File(const File &f) : VectorOfPointers<Hunk>(f){ _copy(f);}
+    ~File(){}
+    File &operator=(const File &f){ VectorOfPointers<Hunk>::operator=(f); _copy(f); return *this;}
 
-    void addFile(File *f){ VectorOfPointers<File>::_add(f); }
-    int numFiles() const { return VectorOfPointers<File>::_size(); }
-    QString getFilename(int pos) const
-        { return VectorOfPointers<File>::_get(pos)->getFilename(); }
-    File const *getFile(int pos) const
-        { return VectorOfPointers<File>::_get(pos); }
+    void addHunk(Hunk *h){ VectorOfPointers<Hunk>::_add(h);}
+    int numHunks() const { return VectorOfPointers<Hunk>::_size();}
+
+    /**
+     * Return filename.
+     */
+    const QString &getFilename() const { return _filename; }
 };
-
 #endif

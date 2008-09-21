@@ -28,9 +28,9 @@
 #include <exception>
 #include <QTextStream>
 
-#include "tokens.h"
-#include "in.hpp"
-#include "../diff/diff.h"
+#include "parser/tokens.hpp"
+#include "parser/in.hpp"
+#include "diff/diff.hpp"
 
 class ParserException : std::exception {
 };

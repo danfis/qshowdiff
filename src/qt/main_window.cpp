@@ -24,7 +24,8 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QVBoxLayout>
-#include "main_window.h"
+
+#include "qt/main_window.hpp"
 
 MainWindow::MainWindow()
 {

@@ -20,7 +20,7 @@
  * along with QShowDiff.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "settings.h"
+#include "settings.hpp"
 
 int Settings::max_line_width = 0;
 

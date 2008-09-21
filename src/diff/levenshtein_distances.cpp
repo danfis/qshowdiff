@@ -20,8 +20,8 @@
  * along with QShowDiff.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "levenshtein_distances.h"
-#include "../debug.h"
+#include "diff/levenshtein_distances.hpp"
+#include "msg.hpp"
 using std::vector;
 using std::pair;
 using std::list;

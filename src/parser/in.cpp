@@ -20,9 +20,7 @@
  * along with QShowDiff.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "in.hpp"
-
-
+#include "parser/in.hpp"
 
 In::In(FILE *input)
     : _buffer_on(false)

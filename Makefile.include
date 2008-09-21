@@ -1,0 +1,26 @@
+CC = g++
+MOC = moc
+
+DESTDIR ?= /usr/local/bin
+DEFAULT_CODEC ?= DEFAULT
+
+QT_CFLAGS = $(shell pkg-config QtCore QtGui --cflags)
+QT_LIBS = $(shell pkg-config QtCore QtGui --libs)
+
+
+ifeq '$(DEBUG)' 'yes'
+  CXXFLAGS = -g
+else
+  CXXFLAGS += -DNDEBUG
+endif
+export $(DEBUG)
+
+ifneq '$(DEFAULT_CODEC)' 'DEFAULT'
+  CXXFLAGS += -DDEFAULT_CODEC=\"$(DEFAULT_CODEC)\"
+endif
+export $(DEFAULT_CODEC)
+
+CXXFLAGS += -Wall -Wno-long-long -pedantic
+
+
+

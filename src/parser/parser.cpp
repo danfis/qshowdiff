@@ -20,8 +20,8 @@
  * along with QShowDiff.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "parser.h"
-#include "../diff/diff.h"
+#include "parser/parser.hpp"
+#include "diff/diff.hpp"
 
 using namespace std;
 
