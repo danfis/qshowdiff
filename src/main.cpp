@@ -32,9 +32,6 @@
 #include "msg.hpp"
 #include "settings.hpp"
 
-#include "diff/diff.hpp"
-#include "diff/text.hpp"
-
 #include "qt/main_window.hpp"
 
 #include "parser/parser.hpp"
