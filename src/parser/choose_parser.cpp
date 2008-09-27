@@ -29,6 +29,9 @@ using namespace std;
 
 static QRegExp git("^diff --git.*$");
 static QRegExp bzr("^=== (added|removed|modified) file .*$");
+static QRegExp svn("^Index: [^ ]+.*$");
+static QRegExp diff("^diff -r[a-zA-Z]* .*$");
+
 
 Parser *chooseParser(In &in)
 {
@@ -36,19 +39,28 @@ Parser *chooseParser(In &in)
     QString line;
 
     in.startBuff();
-    do {
-        line = in.line();
 
+    line = in.line();
+    while (!line.isNull() && type.size() == 0){
         if (git.exactMatch(line))
             type = "git";
 
         if (bzr.exactMatch(line))
             type = "bzr";
 
-    } while (type.size() == 0);
+        if (svn.exactMatch(line))
+            type = "svn";
+
+        if (diff.exactMatch(line))
+            type = "diff";
+
+        line = in.line();
+    }
 
     in.endBuff();
 
+    if (type.size() <= 0)
+        return 0;
     return new Parser(type, in);
 }
 

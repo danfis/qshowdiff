@@ -30,16 +30,11 @@ In::In(FILE *input)
 
 In::~In()
 {
-    std::list<QString *>::iterator it, it_end;
+    std::list<QString>::iterator it, it_end;
 
     if (_in)
         delete _in;
 
-    it = _buffer.begin();
-    it_end = _buffer.end();
-    for (; it != it_end; ++it){
-        delete *it;
-    }
     _buffer.clear();
 }
 
@@ -54,17 +49,21 @@ void In::endBuff()
     _buffer_on = false;
 }
 
+void In::clearBuff()
+{
+    _buffer.clear();
+}
+
 QString In::line()
 {
     if (_buffer_on){
-        QString *line = new QString(_in->readLine());
+        QString line = _in->readLine();
         _buffer.push_back(line);
-        return *line;
+        return line;
     }
 
     if (!_buffer.empty()){
-        QString line(*_buffer.front());
-        delete _buffer.front();
+        QString line(_buffer.front());
         _buffer.pop_front();
 
         return line;

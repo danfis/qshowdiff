@@ -29,23 +29,19 @@
 
 class In {
     QTextStream *_in;
-    std::list<QString *> _buffer;
+    std::list<QString> _buffer;
     bool _buffer_on;
 
   public:
     In(FILE *input = stdin);
     ~In();
 
-
-    /** TODO: Remove this function */
-    QTextStream *pickUpQTextStream()
-        { QTextStream *ret = _in; _in = 0; return ret; }
-
     /**
      * Starts and end buffering input lines
      */
     void startBuff();
     void endBuff();
+    void clearBuff();
 
     /**
      * Returns next line from input

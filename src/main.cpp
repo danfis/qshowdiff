@@ -142,8 +142,14 @@ int main(int argc, char *argv[])
     try{
         In in(stdin);
         Parser *parser = chooseParser(in);
-        parser->parse();
-        delete parser;
+        if (parser != 0){
+            parser->parse();
+            delete parser;
+        }else{
+            std::cerr << "Error: Unknown type of input." << std::endl;
+            usage(argc, argv);
+            return -1;
+        }
     }catch(ParserException &e){
         std::cerr << "Error: Unknown type of input." << std::endl;
         usage(argc, argv);
