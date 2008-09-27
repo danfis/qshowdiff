@@ -36,47 +36,83 @@ static QRegExp bzr("^=== (added|removed|modified) file .*$");
 static QRegExp svn("^Index: [^ ]+.*$");
 static QRegExp diffr("^diff -r[a-zA-Z]* .*$");
 
+enum Type {
+    NONE = -1,
+    GIT = 0,
+    BZR,
+    SVN,
+    DIFFR,
+    NUM_TYPES
+};
+
+const char *types[] = {
+    "git",
+    "bzr",
+    "svn",
+    "diffr"
+};
+
 
 Parser *chooseParser(In &in)
 {
-    // TODO: change type to int
-    string type;
+    Type type = NONE;
     QString line;
 
     in.startBuff();
 
     line = in.line();
-    while (!line.isNull() && type.size() == 0){
+    while (!line.isNull() && type == NONE){
         if (git.exactMatch(line))
-            type = "git";
+            type = GIT;
 
         if (bzr.exactMatch(line))
-            type = "bzr";
+            type = BZR;
 
         if (svn.exactMatch(line))
-            type = "svn";
+            type = SVN;
 
         if (diffr.exactMatch(line))
-            type = "diffr";
+            type = DIFFR;
 
         line = in.line();
     }
 
     in.endBuff();
 
-    if (type == "git"){
-        MSG("Chosen type: 'git'");
+    if (type != NONE){
+        MSG("Chosen type '" << types[type] << "'");
+    }
+
+    switch (type){
+        case GIT:
+            return new ParserGit(in);
+        case BZR:
+            return new ParserBzr(in);
+        case SVN:
+            return new ParserSvn(in);
+        case DIFFR:
+            return new ParserDiffR(in);
+        default:
+            return 0;
+    }
+}
+
+Parser *chooseParser(In &in, const char *type)
+{
+    if (strcasecmp(type, "git") == 0){
+        MSG("Chosen type '" << types[GIT] << "'");
         return new ParserGit(in);
-    }else if (type == "bzr"){
-        MSG("Chosen type: 'bzr'");
+    }else if (strcasecmp(type, "bzr") == 0){
+        MSG("Chosen type '" << types[BZR] << "'");
         return new ParserBzr(in);
-    }else if (type == "svn"){
-        MSG("Chosen type: 'svn'");
+    }else if (strcasecmp(type, "svn") == 0){
+        MSG("Chosen type '" << types[SVN] << "'");
         return new ParserSvn(in);
-    }else if (type == "diffr"){
-        MSG("Chosen type: 'diffr'");
+    }else if (strcasecmp(type, "diffr") == 0){
+        MSG("Chosen type '" << types[DIFFR] << "'");
         return new ParserDiffR(in);
     }
+
     return 0;
 }
 

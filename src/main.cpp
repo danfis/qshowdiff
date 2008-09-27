@@ -43,11 +43,8 @@
 
 using std::string;
 
-#ifndef DEFAULT_TYPE
-# define DEFAULT_TYPE "git"
-#endif
-
 void usage(int argc, char *argv[]);
+void setUpCodec(QTextCodec *codec);
 char *codecPart(char *str);
 void availableCodecs();
 
@@ -69,7 +66,7 @@ int main(int argc, char *argv[])
 {
     int c, option_index;
     QTextCodec *codec = 0;
-    string input_type;
+    const char *input_type = 0;
 
     MILESTONE("");
     MILESTONE("====== START QSHOWDIFF ======");
@@ -98,40 +95,10 @@ int main(int argc, char *argv[])
         }
     }
 
-    if (codec == 0){
-#ifdef DEFAULT_CODEC
-        /* Set up codec manualy */
-        codec = QTextCodec::codecForName(DEFAULT_CODEC);
-#else /* DEFAULT_CODEC */
-        char *var = NULL;
-
-        var = getenv("LC_ALL");
-        if (var == NULL || strlen(var) <= 0)
-            var = getenv("LC_CTYPE");
-        if (var == NULL || strlen(var) <= 0)
-            var = getenv("LANG");
-
-        if (var != NULL){
-            var = codecPart(var);
-            codec = QTextCodec::codecForName(var);
-
-            DBG("Detected codec: '" << var << "'");
-        }
-
-        if (codec == 0){
-            DBG("Previously detected codec wasn't accepted. Falling to codecForLocale.");
-            codec = QTextCodec::codecForLocale();
-        }
-    }
-#endif /* DEFAULT_CODEC */
-
-    DBG("Codec: " << (const char *)codec->name());
-    QTextCodec::setCodecForCStrings(codec);
-    QTextCodec::setCodecForLocale(codec);
-    QTextCodec::setCodecForTr(codec);
+    setUpCodec(codec);
 
     if (argc - optind == 0){
-        input_type = DEFAULT_TYPE;
+        input_type = 0;
     }else if (argc - optind == 1){
         input_type = argv[optind];
     }else{
@@ -140,7 +107,13 @@ int main(int argc, char *argv[])
     }
 
     In in(stdin);
-    Parser *parser = chooseParser(in);
+    Parser *parser;
+    if (input_type == 0){
+        parser = chooseParser(in);
+    }else{
+        parser = chooseParser(in, input_type);
+    }
+
     if (parser != 0){
         parser->parse();
         delete parser;
@@ -171,9 +144,7 @@ int main(int argc, char *argv[])
 
 void usage(int argc, char *argv[])
 {
-    std::string def(DEFAULT_TYPE);
-
-    std::cerr << "Usage: " << argv[0] << "  [ OPTIONS ]  type" << std::endl;
+    std::cerr << "Usage: " << argv[0] << "  [ OPTIONS ]  [ type ]" << std::endl;
     std::cerr << std::endl;
     std::cerr << "  OPTIONS:" << std::endl;
     std::cerr << "      --text-codec  codec_name  Specify which text codec will be used during reading diff" << std::endl;
@@ -193,6 +164,42 @@ void usage(int argc, char *argv[])
     }
     */
 }
+
+void setUpCodec(QTextCodec *codec)
+{
+    if (codec == 0){
+#ifdef DEFAULT_CODEC
+        /* Set up codec manualy */
+        codec = QTextCodec::codecForName(DEFAULT_CODEC);
+#else /* DEFAULT_CODEC */
+        char *var = NULL;
+
+        var = getenv("LC_ALL");
+        if (var == NULL || strlen(var) <= 0)
+            var = getenv("LC_CTYPE");
+        if (var == NULL || strlen(var) <= 0)
+            var = getenv("LANG");
+
+        if (var != NULL){
+            var = codecPart(var);
+            codec = QTextCodec::codecForName(var);
+
+            DBG("Detected codec: '" << var << "'");
+        }
+
+        if (codec == 0){
+            DBG("Previously detected codec wasn't accepted. Falling to codecForLocale.");
+            codec = QTextCodec::codecForLocale();
+        }
+#endif /* DEFAULT_CODEC */
+    }
+
+    DBG("Codec: " << (const char *)codec->name());
+    QTextCodec::setCodecForCStrings(codec);
+    QTextCodec::setCodecForLocale(codec);
+    QTextCodec::setCodecForTr(codec);
+}
+
 
 char *codecPart(char *str)
 {

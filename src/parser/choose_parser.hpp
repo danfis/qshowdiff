@@ -28,5 +28,6 @@
 #define _CHOOSE_PARSER_HPP_
 
 Parser *chooseParser(In &in);
+Parser *chooseParser(In &in, const char *type);
 
 #endif
