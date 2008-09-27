@@ -26,15 +26,20 @@ using namespace std;
 #include <QRegExp>
 
 #include "parser/choose_parser.hpp"
+#include "parser/parser_git.hpp"
+#include "parser/parser_svn.hpp"
+#include "parser/parser_bzr.hpp"
+#include "parser/parser_diffr.hpp"
 
 static QRegExp git("^diff --git.*$");
 static QRegExp bzr("^=== (added|removed|modified) file .*$");
 static QRegExp svn("^Index: [^ ]+.*$");
-static QRegExp diff("^diff -r[a-zA-Z]* .*$");
+static QRegExp diffr("^diff -r[a-zA-Z]* .*$");
 
 
 Parser *chooseParser(In &in)
 {
+    // TODO: change type to int
     string type;
     QString line;
 
@@ -51,16 +56,27 @@ Parser *chooseParser(In &in)
         if (svn.exactMatch(line))
             type = "svn";
 
-        if (diff.exactMatch(line))
-            type = "diff";
+        if (diffr.exactMatch(line))
+            type = "diffr";
 
         line = in.line();
     }
 
     in.endBuff();
 
-    if (type.size() <= 0)
-        return 0;
-    return new Parser(type, in);
+    if (type == "git"){
+        MSG("Chosen type: 'git'");
+        return new ParserGit(in);
+    }else if (type == "bzr"){
+        MSG("Chosen type: 'bzr'");
+        return new ParserBzr(in);
+    }else if (type == "svn"){
+        MSG("Chosen type: 'svn'");
+        return new ParserSvn(in);
+    }else if (type == "diffr"){
+        MSG("Chosen type: 'diffr'");
+        return new ParserDiffR(in);
+    }
+    return 0;
 }
 

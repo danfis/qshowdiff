@@ -25,332 +25,61 @@
 
 using namespace std;
 
-/* PARSER */
-// public:
-void Parser::parse()
+Parser::Parser(In &in)
+    : _in(in), _cur_file(0), _cur_hunk(0)
 {
-    _readNextLine();
-
-    while (_current_state != END_STATE){
-        switch (_current_state){
-            case START_STATE:
-                _start();
-                break;
-            case FILE_STATE:
-                _file();
-                break;
-            case HUNK_STATE:
-                _hunk();
-                break;
-            case CONTEXT_STATE:
-                _context();
-                break;
-            case ADDED_STATE:
-                _added();
-                break;
-            case DELETED_STATE:
-                _deleted();
-                break;
-            case CHANGED_STATE:
-                _changed();
-                break;
-            case END_STATE:
-                break;
-        }
-    }
-    _end();
 }
 
-void Parser::_start()
+Parser::~Parser()
 {
-    if (_current_token == Tokens::FILE_TOK){
-        _changeState(FILE_STATE);
-    }else{
-        _readNextLine();
-    }
 }
 
-void Parser::_file()
+bool Parser::_nextLine()
 {
-    if (_current_token == Tokens::FILE_TOK){
-        _createNewFile();
-        _readNextLine();
-    }else if (_current_token == Tokens::HUNK_TOK){
-        _changeState(HUNK_STATE);
-    }else{
-        _readNextLine();
-    }
+    _line = _in.line();
+
+    return !_line.isNull();
 }
 
-void Parser::_hunk()
+void Parser::_newFile(const QString &filename)
 {
-    switch (_current_token){
-        case Tokens::HUNK_TOK:
-            _createNewHunk();
-            _readNextLine();
-            break;
-        case Tokens::FILE_TOK:
-            _changeState(FILE_STATE);
-            break;
-        case Tokens::ADDED_TOK:
-            _changeState(ADDED_STATE);
-            break;
-        case Tokens::DELETED_TOK:
-            _changeState(DELETED_STATE);
-            break;
-        case Tokens::CONTEXT_TOK:
-            _changeState(CONTEXT_STATE);
-            break;
-        default:
-            _readNextLine();
-    }
-}
-
-void Parser::_context()
-{
-    if (_current_token == Tokens::CONTEXT_TOK){
-        _addCurrentLineToContext();
-        _readNextLine();
-    }else{
-        _finishContext();
-
-        switch (_current_token){
-            case Tokens::FILE_TOK:
-                _changeState(FILE_STATE);
-                break;
-            case Tokens::HUNK_TOK:
-                _changeState(HUNK_STATE);
-                break;
-            case Tokens::ADDED_TOK:
-                _changeState(ADDED_STATE);
-                break;
-            case Tokens::DELETED_TOK:
-                _changeState(DELETED_STATE);
-                break;
-            default:
-                _readNextLine();
-        }
-    }
-}
-
-void Parser::_added()
-{
-    if (_current_token == Tokens::ADDED_TOK){
-        _addCurrentLineToAdded();
-        _readNextLine();
-    }else if (_current_token == Tokens::DELETED_TOK){
-        _changeState(CHANGED_STATE);
-    }else{
-        _finishAdded();
-
-        switch (_current_token){
-            case Tokens::FILE_TOK:
-                _changeState(FILE_STATE);
-                break;
-            case Tokens::HUNK_TOK:
-                _changeState(HUNK_STATE);
-                break;
-            case Tokens::CONTEXT_TOK:
-                _changeState(CONTEXT_STATE);
-                break;
-            default:
-                _readNextLine();
-        }
-    }
-}
-
-void Parser::_deleted()
-{
-    if (_current_token == Tokens::DELETED_TOK){
-        _addCurrentLineToDeleted();
-        _readNextLine();
-    }else if (_current_token == Tokens::ADDED_TOK){
-        _changeState(CHANGED_STATE);
-    }else{
-        _finishDeleted();
-
-        switch (_current_token){
-            case Tokens::FILE_TOK:
-                _changeState(FILE_STATE);
-                break;
-            case Tokens::HUNK_TOK:
-                _changeState(HUNK_STATE);
-                break;
-            case Tokens::CONTEXT_TOK:
-                _changeState(CONTEXT_STATE);
-                break;
-            default:
-                _readNextLine();
-        }
-    }
-}
-
-void Parser::_changed()
-{
-    if (_current_token == Tokens::DELETED_TOK){
-        _addCurrentLineToDeleted();
-        _readNextLine();
-    }else if (_current_token == Tokens::ADDED_TOK){
-        _addCurrentLineToAdded();
-        _readNextLine();
-    }else{
-        _finishChanged();
-
-        switch (_current_token){
-            case Tokens::FILE_TOK:
-                _changeState(FILE_STATE);
-                break;
-            case Tokens::HUNK_TOK:
-                _changeState(HUNK_STATE);
-                break;
-            case Tokens::CONTEXT_TOK:
-                _changeState(CONTEXT_STATE);
-                break;
-            default:
-                _readNextLine();
-        }
-    }
-}
-
-void Parser::_end()
-{
-    _finishContext();
-    _finishChanged();
-    _finishAdded();
-    _finishDeleted();
-
-    _changeState(END_STATE);
-}
-
-
-// private:
-void Parser::_readNextLine()
-{
-    _current_line = _in.line();
-    if (_current_line.isNull()){
-        _changeState(END_STATE);
-        _current_token = Tokens::NONE_TOK;
-        return;
-    }
-
-    _tokens->setCurrentLine(_current_line);
-    _current_token = _tokens->match();
-    DBG("Read line \"" << _current_line.toStdString() << "\" --> current token:" << _current_token);
-}
-
-void Parser::_changeState(Parser::states new_state)
-{
-    _current_state = new_state;
-#ifndef NDEBUG
-    string state;
-    switch (_current_state){
-        case START_STATE:
-            state = "START_STATE";
-            break;
-        case FILE_STATE:
-            state = "FILE_STATE";
-            break;
-        case HUNK_STATE:
-            state = "HUNK_STATE";
-            break;
-        case CONTEXT_STATE:
-            state = "CONTEXT_STATE";
-            break;
-        case ADDED_STATE:
-            state = "ADDED_STATE";
-            break;
-        case DELETED_STATE:
-            state = "DELETED_STATE";
-            break;
-        case CHANGED_STATE:
-            state = "CHANGED_STATE";
-            break;
-        case END_STATE:
-            state = "END_STATE";
-            break;
-    }
-    DBG("State changed to " << state);
-#endif
-}
-
-
-
-void Parser::_createNewFile()
-{
-    _cur_file = new File(_tokens->getFilename());
+    _cur_file = new File(filename);
     Diff::instance()->addFile(_cur_file);
 }
 
-void Parser::_createNewHunk()
+void Parser::_newHunk(int from, int to)
 {
-    std::pair<int, int> from;
+    if (_cur_file == 0)
+        _newFile();
 
-    if (_cur_file == NULL){
-        _cur_file = new File("Unknown");
-        Diff::instance()->addFile(_cur_file);
-    }
-
-    from = _tokens->getHunkNums();
-    _cur_hunk = new Hunk(from.first, from.second);
+    _cur_hunk = new Hunk(from, to);
     _cur_file->addHunk(_cur_hunk);
 }
 
-void Parser::_addCurrentLineToContext()
+void Parser::_newContext(Text &t)
 {
-    //if (_cur_context == NULL)
-    //    _cur_context = new Text();
-    _cur_context.addLine(new QString(_tokens->getContext()));
-}
-void Parser::_finishContext()
-{
-    if (_cur_context.isEmpty() || _cur_hunk == NULL)
-        return;
-    _cur_hunk->addSnippet(new Context(_cur_context));
-    _cur_context.clear();
+    if (_cur_hunk == 0)
+        _newHunk();
+    _cur_hunk->addSnippet(new Context(t));
 }
 
-void Parser::_addCurrentLineToAdded()
+void Parser::_newAdded(Text &t)
 {
-    //if (_cur_added == NULL)
-    //    _cur_added = new Text();
-    _cur_added.addLine(new QString(_tokens->getAdded()));
-}
-void Parser::_finishAdded()
-{
-    if (_cur_added.isEmpty() || _cur_hunk == NULL){
-        return;
-    }
-    _cur_hunk->addSnippet(new Added(_cur_added));
-    _cur_added.clear();
+    if (_cur_hunk == 0)
+        _newHunk();
+    _cur_hunk->addSnippet(new Added(t));
 }
 
-void Parser::_addCurrentLineToDeleted()
+void Parser::_newDeleted(Text &t)
 {
-    //if (_cur_deleted == NULL)
-    //    _cur_deleted = new Text();
-    _cur_deleted.addLine(new QString(_tokens->getDeleted()));
-}
-void Parser::_finishDeleted()
-{
-    if (_cur_deleted.isEmpty() || _cur_hunk == NULL){
-        return;
-    }
-    _cur_hunk->addSnippet(new Deleted(_cur_deleted));
-    _cur_deleted.clear();
+    if (_cur_hunk == 0)
+        _newHunk();
+    _cur_hunk->addSnippet(new Deleted(t));
 }
 
-void Parser::_finishChanged()
+void Parser::_newChanged(Text &deleted, Text &added)
 {
-    if (_cur_deleted.isEmpty() || _cur_added.isEmpty() || _cur_hunk == NULL){
-        return;
-    }
-
-    DBG("Finish changed:");
-    DBG("added: " << _cur_added.getLine(0).toStdString());
-    DBG("deleted: " << _cur_deleted.getLine(0).toStdString());
-    _cur_hunk->addSnippet(new Changed(_cur_deleted, _cur_added));
-    _cur_deleted.clear();
-    _cur_added.clear();
+    if (_cur_hunk == 0)
+        _newHunk();
+    _cur_hunk->addSnippet(new Changed(deleted, added));
 }
-/* PARSER END */
-

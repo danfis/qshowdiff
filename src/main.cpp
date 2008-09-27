@@ -139,18 +139,12 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    try{
-        In in(stdin);
-        Parser *parser = chooseParser(in);
-        if (parser != 0){
-            parser->parse();
-            delete parser;
-        }else{
-            std::cerr << "Error: Unknown type of input." << std::endl;
-            usage(argc, argv);
-            return -1;
-        }
-    }catch(ParserException &e){
+    In in(stdin);
+    Parser *parser = chooseParser(in);
+    if (parser != 0){
+        parser->parse();
+        delete parser;
+    }else{
         std::cerr << "Error: Unknown type of input." << std::endl;
         usage(argc, argv);
         return -1;
@@ -189,12 +183,15 @@ void usage(int argc, char *argv[])
     std::cerr << std::endl;
     std::cerr << "  Types can be:" << std::endl;
 
+    /*
+       TODO
     for (int i=0; all_tokens[i].name != 0; i++){
         std::cerr << "      " << all_tokens[i].name;
         if (def.compare(all_tokens[i].name) == 0)
             std::cerr << " (default)";
         std::cerr << std::endl;
     }
+    */
 }
 
 char *codecPart(char *str)

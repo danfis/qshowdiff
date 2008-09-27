@@ -20,77 +20,50 @@
  * along with QShowDiff.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _PARSER_H_
-#define _PARSER_H_
+#ifndef _PARSER_HPP_
+#define _PARSER_HPP_
 
-#include <string>
-#include <vector>
-#include <exception>
 #include <QTextStream>
 
-#include "parser/tokens.hpp"
 #include "parser/in.hpp"
 #include "diff/diff.hpp"
 
-class ParserException : std::exception {
-};
-
-class Parser{
-  private:
-    enum states{
-        START_STATE = 0,
-        FILE_STATE,
-        HUNK_STATE,
-        CONTEXT_STATE,
-        ADDED_STATE,
-        DELETED_STATE,
-        CHANGED_STATE,
-        END_STATE
-    };
-
-    states _current_state;
-    QString _current_line;
-    Tokens::token _current_token;
-
+class Parser {
+  protected:
     In &_in;
-    Tokens *_tokens;
+
+    QString _line;
 
     File *_cur_file;
     Hunk *_cur_hunk;
-    Text _cur_context;
-    Text _cur_deleted;
-    Text _cur_added;
+    Text _text_buffer1, _text_buffer2;
 
-    void _changeState(states);
-    void _readNextLine();
+    virtual bool _nextLine();
 
-    void _createNewFile();
+    virtual void _clearBuffer1() { _text_buffer1.clear(); }
+    virtual void _clearBuffer2() { _text_buffer2.clear(); }
+    virtual void _clearBuffers() { _clearBuffer1(); _clearBuffer2(); }
 
-    void _createNewHunk();
+    virtual void _lineToBuffer1()
+        { _text_buffer1.addLine(new QString(_line)); }
+    virtual void _lineToBuffer2()
+        { _text_buffer2.addLine(new QString(_line)); }
 
-    void _addCurrentLineToContext();
-    void _finishContext();
-    void _addCurrentLineToAdded();
-    void _finishAdded();
-    void _addCurrentLineToDeleted();
-    void _finishDeleted();
-    void _finishChanged();
+    virtual inline Text &_buff1() { return _text_buffer1; }
+    virtual inline Text &_buff2() { return _text_buffer2; }
 
-    void _start();
-    void _file();
-    void _hunk();
-    void _context();
-    void _added();
-    void _deleted();
-    void _changed();
-    void _end();
+    virtual void _newFile(const QString &filename = "");
+    virtual void _newHunk(int from = 0, int to = 0);
+    virtual void _newContext(Text &);
+    virtual void _newAdded(Text &);
+    virtual void _newDeleted(Text &);
+    virtual void _newChanged(Text &deleted, Text &added);
+
   public:
-    Parser(std::string type, In &in) :
-        _current_state(START_STATE),
-        _in(in),
-        _cur_file(NULL), _cur_hunk(NULL)
-        { _tokens = TokenFactory(type); if (_tokens == NULL) throw ParserException();}
-    void parse();
+    Parser(In &in);
+    virtual ~Parser();
+
+    virtual void parse() = 0;
 };
 
 #endif
