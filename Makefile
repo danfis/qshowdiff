@@ -15,7 +15,8 @@ clean:
 	$(MAKE) -C tests clean
 	rm -f *.o
 
-check: all
-	cd tests && $(MAKE)
+check:
+	$(MAKE) -C src
+	$(MAKE) -C tests check
 
 .PHONY: all check clean install prepare
