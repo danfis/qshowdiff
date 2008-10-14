@@ -55,6 +55,7 @@ const char *types[] = {
     "diffr",
     "diff"
 };
+int types_len = sizeof(types) / sizeof(const char *);
 
 /**
  * Mapping between Type and name of type.

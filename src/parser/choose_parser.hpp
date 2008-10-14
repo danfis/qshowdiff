@@ -27,6 +27,9 @@
 #ifndef _CHOOSE_PARSER_HPP_
 #define _CHOOSE_PARSER_HPP_
 
+extern const char *types[];
+extern int types_len;
+
 Parser *chooseParser(In &in);
 Parser *chooseParser(In &in, const char *type);
 
