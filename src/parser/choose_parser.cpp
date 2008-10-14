@@ -41,10 +41,10 @@ static QRegExp diff("^[0-9]+(,[0-9]*)?c[0-9]+(,[0-9])?$");
 enum Type {
     NONE = -1,
     GIT = 0,
-    BZR,
-    SVN,
-    DIFFR,
-    DIFF,
+    BZR = 1,
+    SVN = 2,
+    DIFFR = 3,
+    DIFF = 4,
     NUM_TYPES
 };
 
@@ -55,6 +55,31 @@ const char *types[] = {
     "diffr",
     "diff"
 };
+
+/**
+ * Mapping between Type and name of type.
+ */
+struct TypesMapping {
+    Type type;
+    const char *name;
+} types_map[] = {
+    { GIT, "git" },
+    { BZR, "bzr" },
+    { BZR, "bazaar" },
+    { SVN, "svn" },
+    { SVN, "subversion" },
+    { DIFFR, "diffr" },
+    { DIFF, "diff" },
+};
+
+/**
+ * Length of array types_map - statically initialized.
+ */
+int types_map_len = sizeof(types_map) / sizeof(const char *);
+
+
+
+static Parser *parser(In &in, Type);
 
 
 Parser *chooseParser(In &in)
@@ -86,7 +111,22 @@ Parser *chooseParser(In &in)
 
     in.endBuff();
 
-    if (type != NONE){
+    return parser(in, type);
+}
+
+Parser *chooseParser(In &in, const char *type)
+{
+    for (int i=0; i < types_map_len; i++){
+        if (strcasecmp(type, types_map[i].name) == 0){
+            return parser(in, types_map[i].type);
+        }
+    }
+    return 0;
+}
+
+Parser *parser(In &in, Type type)
+{
+    if (type >= 0 && type < NUM_TYPES){
         MSG("Chosen type '" << types[type] << "'");
     }
 
@@ -104,27 +144,5 @@ Parser *chooseParser(In &in)
         default:
             return 0;
     }
-}
-
-Parser *chooseParser(In &in, const char *type)
-{
-    if (strcasecmp(type, "git") == 0){
-        MSG("Chosen type '" << types[GIT] << "'");
-        return new ParserGit(in);
-    }else if (strcasecmp(type, "bzr") == 0){
-        MSG("Chosen type '" << types[BZR] << "'");
-        return new ParserBzr(in);
-    }else if (strcasecmp(type, "svn") == 0){
-        MSG("Chosen type '" << types[SVN] << "'");
-        return new ParserSvn(in);
-    }else if (strcasecmp(type, "diffr") == 0){
-        MSG("Chosen type '" << types[DIFFR] << "'");
-        return new ParserDiffR(in);
-    }else if (strcasecmp(type, "diff") == 0){
-        MSG("Chosen type '" << types[DIFF] << "'");
-        return new ParserDiff(in);
-    }
-
-    return 0;
 }
 
