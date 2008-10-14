@@ -36,7 +36,7 @@ static QRegExp git("^diff --git.*$");
 static QRegExp bzr("^=== (added|removed|modified) file .*$");
 static QRegExp svn("^Index: [^ ]+.*$");
 static QRegExp diffr("^diff -r[a-zA-Z]* .*$");
-static QRegExp diff("^[0-9]+(,[0-9]*)?c[0-9]+(,[0-9])?$");
+static QRegExp diff("^[0-9]+(,[0-9]*)?[a-z][0-9]+(,[0-9])?$");
 
 enum Type {
     NONE = -1,
