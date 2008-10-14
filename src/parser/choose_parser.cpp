@@ -30,11 +30,13 @@ using namespace std;
 #include "parser/parser_svn.hpp"
 #include "parser/parser_bzr.hpp"
 #include "parser/parser_diffr.hpp"
+#include "parser/parser_diff.hpp"
 
 static QRegExp git("^diff --git.*$");
 static QRegExp bzr("^=== (added|removed|modified) file .*$");
 static QRegExp svn("^Index: [^ ]+.*$");
 static QRegExp diffr("^diff -r[a-zA-Z]* .*$");
+static QRegExp diff("^[0-9]+(,[0-9]*)?c[0-9]+(,[0-9])?$");
 
 enum Type {
     NONE = -1,
@@ -42,6 +44,7 @@ enum Type {
     BZR,
     SVN,
     DIFFR,
+    DIFF,
     NUM_TYPES
 };
 
@@ -49,7 +52,8 @@ const char *types[] = {
     "git",
     "bzr",
     "svn",
-    "diffr"
+    "diffr",
+    "diff"
 };
 
 
@@ -74,6 +78,9 @@ Parser *chooseParser(In &in)
         if (diffr.exactMatch(line))
             type = DIFFR;
 
+        if (diff.exactMatch(line))
+            type = DIFF;
+
         line = in.line();
     }
 
@@ -92,6 +99,8 @@ Parser *chooseParser(In &in)
             return new ParserSvn(in);
         case DIFFR:
             return new ParserDiffR(in);
+        case DIFF:
+            return new ParserDiff(in);
         default:
             return 0;
     }
@@ -111,6 +120,9 @@ Parser *chooseParser(In &in, const char *type)
     }else if (strcasecmp(type, "diffr") == 0){
         MSG("Chosen type '" << types[DIFFR] << "'");
         return new ParserDiffR(in);
+    }else if (strcasecmp(type, "diff") == 0){
+        MSG("Chosen type '" << types[DIFF] << "'");
+        return new ParserDiff(in);
     }
 
     return 0;
