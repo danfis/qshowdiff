@@ -37,6 +37,7 @@ Parser::~Parser()
 bool Parser::_nextLine()
 {
     _line = _in.line();
+    DBG("Line: " << _line.toStdString());
 
     return !_line.isNull();
 }

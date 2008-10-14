@@ -62,6 +62,8 @@ void ParserBig::parse()
                 break;
         }
     }
+
+    _changeState(SEnd);
 }
 
 bool ParserBig::_matchLine(QRegExp &re)
@@ -84,6 +86,8 @@ void ParserBig::_fromToFromTHunk(int *from, int *to)
 void ParserBig::_changeState(States s)
 {
     int from, to;
+
+    DBG("Change state " << _state << " -> " << s);
 
     // leaving SContext state -> create Context snippet
     if (_state == SContext && s != SContext){
