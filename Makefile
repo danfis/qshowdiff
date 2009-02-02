@@ -8,6 +8,7 @@ all:
 
 install: all
 	cp src/qshowdiff $(DESTDIR)/qshowdiff
+	cp doc/qshowdiff.1.gz $(MANDIR)/qshowdiff.1.gz
 
 clean:
 	$(MAKE) -C src clean

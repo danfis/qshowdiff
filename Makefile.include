@@ -1,7 +1,10 @@
 CC = g++
 MOC = moc
+POD2MAN = pod2man
 
-DESTDIR ?= /usr/local/bin
+PREFIX ?= /usr/local
+DESTDIR ?= $(PREFIX)/bin
+MANDIR ?= $(PREFIX)/man/man1
 DEFAULT_CODEC ?= DEFAULT
 
 QT_CFLAGS = $(shell pkg-config QtCore QtGui --cflags)

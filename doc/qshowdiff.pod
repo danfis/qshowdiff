@@ -1,0 +1,50 @@
+=head1 NAME
+
+qshowdiff -  tool for colourful visualisation of diffs.
+
+=head1 SYNOPSIS
+
+qshowdiff [options] [type]
+
+=head1 DESCRIPTION
+
+QShowDiff is simple tool for colourful visualisation of diffs.
+
+QShowDiff does only one thing and that is a visualisation of diffs which
+are read from standard input. It does not compare two files or directories - for that there are many tools that surely do the task very well.
+
+=head1 OPTIONS
+
+=over
+
+=item B<--text-codec> I<codec_name>
+
+Which text codec will be used.
+
+=item B<--available-codecs>
+
+Print out all available codecs.
+
+=item B<Currently available types of input:>
+
+git
+bzr
+svn
+diffr
+diff
+
+=back
+
+=head1 EXAMPLES
+
+See colourful diff generated from git (qshowdiff will recognize that git gererated this diff)
+        git diff | qshowdiff
+
+Save diff from subversion and later see it (with exactly specified type of input)
+        svn diff >text.diff
+        qshowdiff svn <text.diff
+
+=head1 AUTHOR
+
+Daniel Fiser <danfis (at) danfis (dot) cz>
+
