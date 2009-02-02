@@ -1,5 +1,3 @@
-POD2MAN = pod2man
-
 TARGETS = diff.png qt.png qshowdiff.1.gz
 all: $(TARGETS)
 
