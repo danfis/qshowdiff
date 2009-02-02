@@ -7,6 +7,8 @@ Requirements
 -------------
 For compilation you need only Qt4 devel files.
 
+To create man page you need pod2man and gzip programs.
+
 
 Compilation and Installation
 ----------------------------
@@ -17,8 +19,8 @@ If you want to change default codec used by Qt library. Set up
 DEFAULT_CODEC variable in make command. For example:
 	make DEFAULT_CODEC=utf-8
 
-For installation to /usr/local/bin type:
+For installation to /usr/local/ type:
     sudo make install
 And if you want to change destination dir:
-    sudo make DESTDIR=/path/to/dir install
+    sudo make PREFIX=/path/to/dir install
 

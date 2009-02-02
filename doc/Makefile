@@ -1,3 +1,5 @@
+-include ../Makefile.include
+
 TARGETS = diff.png qt.png qshowdiff.1.gz
 all: $(TARGETS)
 

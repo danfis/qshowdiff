@@ -1,10 +1,16 @@
 -include Makefile.include
 
-all:
-	$(MAKE) -C src
-	$(MAKE) -C doc
+all: qshowdiff man
 	$(MAKE) -C tests
 
+qshowdiff:
+	$(MAKE) -C src qshowdiff
+
+man:
+	$(MAKE) -C doc qshowdiff.1.gz
+
+tests:
+	$(MAKE) -C tests
 
 install: all
 	cp src/qshowdiff $(DESTDIR)/qshowdiff
@@ -20,4 +26,4 @@ check:
 	$(MAKE) -C src
 	$(MAKE) -C tests check
 
-.PHONY: all check clean install prepare
+.PHONY: all check clean install qshowdiff man tests

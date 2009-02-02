@@ -1,6 +1,6 @@
-CC = g++
-MOC = moc
-POD2MAN = pod2man
+CC ?= g++
+MOC ?= moc
+POD2MAN ?= pod2man
 
 PREFIX ?= /usr/local
 DESTDIR ?= $(PREFIX)/bin
