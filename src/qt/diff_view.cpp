@@ -48,8 +48,10 @@ DiffViewFrame::DiffViewFrame(QWidget *parent) : QWidget(parent)
     _orig->setWidget(_original);
     _orig->setWidgetResizable(true);
     _orig->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    _orig->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     _modif->setWidget(_modified);
     _modif->setWidgetResizable(true);
+    _modif->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
     splitter->addWidget(_orig);
     splitter->addWidget(_modif);
