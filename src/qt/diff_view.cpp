@@ -217,7 +217,6 @@ void DiffView::_paintLine(const TextSnippets &ts, int from_line)
     QRect text_rect(Settings::Text::line_column_width +
             Settings::Text::line_indentation, offset, this->width(), height);
     int left = text_rect.left();
-    int width;
     QString str;
     QRect rect;
 
@@ -240,57 +239,50 @@ void DiffView::_paintLine(const TextSnippets &ts, int from_line)
             // replace '\t' by eight spaces
             str.replace(QChar('\t'), QString("        "));
 
+            // move left breakpoint to cover next text
+            text_rect.setLeft(left);
+
+            // precompute rectangle which will be used for drawing text
+            rect = painter->boundingRect(text_rect, Qt::AlignLeft, str);
+
+
+            // set up font and pen according to type of text and paint
+            // underlaying rectangle if required
             switch ((*it)->getType()){
                 case range_t::NOCHANGE:
-                    // move text_rect to appropriate place
-                    width = metrics.width(str);
-                    text_rect.setLeft(left);
-                    text_rect.setWidth(width);
-
                     painter->setFont(Settings::Text::font);
                     painter->setPen(Settings::Text::font_color);
                     break;
 
                 case range_t::DELETION:
                 case range_t::INSERTION:
-                    // move text_rect to appropriate place
-                    width = metrics_ins.width(str);
-                    text_rect.setLeft(left);
-                    text_rect.setWidth(width);
-
                     painter->setPen(Settings::Text::background_color_changed);
                     painter->setBrush(Settings::Text::brush_insertion);
-                    painter->drawRect(text_rect);
+                    painter->drawRect(rect);
 
                     painter->setFont(Settings::Text::font_insertion);
                     painter->setPen(Settings::Text::font_color_insertion);
                     break;
 
                 case range_t::SUBSTITUTION:
-                    // move text_rect to appropriate place
-                    width = metrics_subs.width(str);
-                    text_rect.setLeft(left);
-                    text_rect.setWidth(width);
-
                     painter->setPen(Settings::Text::background_color_changed);
                     painter->setBrush(Settings::Text::brush_substitution);
-                    painter->drawRect(text_rect);
+                    painter->drawRect(rect);
 
                     painter->setFont(Settings::Text::font_substitution);
                     painter->setPen(Settings::Text::font_color_substitution);
                     break;
 
                 default:
-                    // move text_rect to appropriate place
-                    width = metrics.width(str);
-                    text_rect.setLeft(left);
-                    text_rect.setWidth(width);
-
                     painter->setFont(Settings::Text::font);
                     painter->setPen(Settings::Text::font_color);
                     break;
             }
-            painter->drawText(text_rect, Qt::AlignLeft, str, &rect);
+
+            // paint text -> in rect is returned real used rectagle
+            painter->drawText(text_rect, Qt::AlignLeft, str);
+
+            // and move left breakpoint according to real used rectangle
             left += rect.width();
         }
     }
