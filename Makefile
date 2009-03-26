@@ -1,7 +1,6 @@
 -include Makefile.include
 
 all: qshowdiff man
-	$(MAKE) -C tests
 
 qshowdiff:
 	$(MAKE) -C src qshowdiff
