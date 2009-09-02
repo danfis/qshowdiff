@@ -76,7 +76,7 @@ struct TypesMapping {
 /**
  * Length of array types_map - statically initialized.
  */
-int types_map_len = sizeof(types_map) / sizeof(const char *);
+int types_map_len = sizeof(types_map) / sizeof(TypesMapping);
 
 
 
