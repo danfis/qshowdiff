@@ -12,7 +12,9 @@ tests:
 	$(MAKE) -C tests
 
 install: all
+	if [ ! -d $(DESTDIR) ]; then mkdir -p $(DESTDIR); fi;
 	cp src/qshowdiff $(DESTDIR)/qshowdiff
+	if [ ! -d $(MANDIR) ]; then mkdir -p $(MANDIR); fi;
 	cp doc/qshowdiff.1.gz $(MANDIR)/qshowdiff.1.gz
 
 clean:
