@@ -13,9 +13,9 @@ libdiff.a: $(OBJS)
 	ranlib $@
 
 %.o: %.cpp %.hpp
-	$(CC) $(CXXFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 %.o: %.cpp
-	$(CC) $(CXXFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 clean:
 	rm -f $(TARGETS)

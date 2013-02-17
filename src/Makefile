@@ -17,12 +17,12 @@ qshowdiff: $(OBJS)
 	$(MAKE) -C diff
 	$(MAKE) -C parser
 	$(MAKE) -C qt
-	$(CC) $(CXXFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LDFLAGS)
 
 %.o: %.cpp %.hpp
-	$(CC) $(CXXFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 %.o: %.cpp
-	$(CC) $(CXXFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 
 clean:

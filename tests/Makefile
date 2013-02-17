@@ -10,12 +10,12 @@ CHECK_REG=../../cu/check-regressions
 all: test
 
 test: $(OBJS)
-	$(CC) $(CXXCFLAGS) -o $@ main.cpp $^ $(LDFLAGS)
+	$(CXX) $(CXXCFLAGS) -o $@ main.cpp $^ $(LDFLAGS)
 
 %.o: %.cpp %.hpp
-	$(CC) $(CXXFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 %.o: %.cpp
-	$(CC) $(CXXFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 check: all
 	@echo ""

@@ -13,9 +13,9 @@ libqt.a: $(OBJS)
 	ranlib $@
 
 %.o: %.cpp %.hpp
-	$(CC) $(CXXFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 %.o: %.cpp
-	$(CC) $(CXXFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 diff_view.cpp: diff_view.moc
 diff_view.moc: diff_view.hpp

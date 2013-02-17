@@ -1,4 +1,4 @@
-CC ?= g++
+CXX ?= g++
 MOC ?= moc
 POD2MAN ?= pod2man
 
