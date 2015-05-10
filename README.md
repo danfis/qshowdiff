@@ -1,6 +1,25 @@
 # QShowDiff
 Tool for visualisation of diffs generated from various VCS systems.
 
+## About
+QShowDiff is simple tool for colourful visualisation of diffs.
+QShowDiff was created because I was missing some tool which would
+do only this one thing. It's true that there are programs such
+as [KDiff3](http://kdiff3.sourceforge.net/) or [Kompare](http://www.caffeinated.me.uk/kompare/),
+however these programs are too complicated for a task as simple as viewing diffs.
+
+QShowDiff does only one thing and that is a visualisation of diff.
+It does not compare two files or directories - for that there are
+many tools that surely do the task very well. And that is the reason
+why QShowDiff was created. I needed a program which will do only one 
+thing - colorful visualisation of diffs. Nothing more and nothing less.
+
+QShowDiff is able to visualise diff generated from various version
+control systems such as Git, Subversion or Bazaar and is also able
+to recognize them by itself.
+
+## License
+QShowDiff is distributed under the GNU General Public License v3. The GNU General Public License v3 should be available at http://www.gnu.org/licenses/gpl.html
 
 ## Requirements
 For compilation you need only Qt4 devel files.
