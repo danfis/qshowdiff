@@ -58,51 +58,43 @@ MainWindow::MainWindow()
 
 void MainWindow::keyPressEvent(QKeyEvent *e)
 {
-    int key;
-
     e->accept();
     DBG("Key Event: " << e->key() << " - " << e->text().toStdString());
 
-    key = e->key();
-    switch (key){
-        case 16777220: // enter
-            _diff_view_frame->scrollDown(10);
-            break;
-        case 16777219: // backspace
-            _diff_view_frame->scrollUp(10);
-            break;
+    int key = e->key();
+    Qt::KeyboardModifiers mod = e->modifiers();
 
-        case 32: // space
-            _diff_view_frame->scrollDown(100);
-            break;
+    if ((key == Qt::Key_J && (mod & Qt::ShiftModifier)) || key == Qt::Key_Down){
+        if (_file_list->currentRow() < _file_list->count() - 1)
+            _file_list->setCurrentRow(_file_list->currentRow() + 1);
 
-        case 81:
-        case 113:
-            close();
-            break;
+    }else if ((key == Qt::Key_K && (mod & Qt::ShiftModifier))
+                    || key == Qt::Key_Up){
+        if (_file_list->currentRow() != 0)
+            _file_list->setCurrentRow(_file_list->currentRow() - 1);
 
-        case 16777238: // pgup
-            _diff_view_frame->scrollUp(100);
-            break;
-        case 16777239: // pgdown
-            _diff_view_frame->scrollDown(100);
-            break;
+    }else if (key == Qt::Key_J || key == Qt::Key_Enter){
+        _diff_view_frame->scrollDown(10);
 
-        case 16777236: //left
-            _diff_view_frame->scrollLeft(50);
-            break;
-        case 16777234:
-            _diff_view_frame->scrollRight(50);
-            break;
+    }else if (key == Qt::Key_K || key == Qt::Key_Backspace){
+        _diff_view_frame->scrollUp(10);
 
-        case 16777235: // up
-            if (_file_list->currentRow() != 0)
-                _file_list->setCurrentRow(_file_list->currentRow() - 1);
-            break;
-        case 16777237: // down
-            if (_file_list->currentRow() < _file_list->count() - 1)
-                _file_list->setCurrentRow(_file_list->currentRow() + 1);
-            break;
+    }else if (key == Qt::Key_L || key == Qt::Key_Left){
+        _diff_view_frame->scrollLeft(50);
 
+    }else if (key == Qt::Key_H || key == Qt::Key_Right){
+        _diff_view_frame->scrollRight(50);
+
+    }else if (key == Qt::Key_Space
+                || key == Qt::Key_PageDown
+                || (key == Qt::Key_D && (mod & Qt::ControlModifier))){
+        _diff_view_frame->scrollDown(100);
+
+    }else if (key == Qt::Key_PageUp
+                || (key == Qt::Key_U && (mod & Qt::ControlModifier))){
+        _diff_view_frame->scrollUp(100);
+
+    }else if (key == Qt::Key_Q || key == Qt::Key_Escape){
+        close();
     }
 }
