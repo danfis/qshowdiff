@@ -1,0 +1,23 @@
+Bootstrap: docker
+From: debian:buster
+
+%post
+    apt-get update
+    apt-get -y install git g++ qt4-default make pkg-config
+
+    cd /
+    git clone https://github.com/danfis/qshowdiff
+    cd /qshowdiff
+    make
+    strip --strip-all /qshowdiff/src/qshowdiff
+    apt-get -y purge git g++ make pkg-config qt4-default
+    apt-get -y autoremove --purge
+    apt-get -y install libqtcore4 libqtgui4
+    rm -rf /var/lib/apt/lists/*
+
+%runscript
+    /qshowdiff/src/qshowdiff "$@"
+
+%labels
+Name        qshowdiff
+Authors     Daniel Fiser <danfis@danfis.cz>
