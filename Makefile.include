@@ -1,5 +1,5 @@
 CXX ?= g++
-MOC ?= moc
+MOC ?= /usr/lib/qt6/libexec/moc
 POD2MAN ?= pod2man
 
 PREFIX ?= /usr/local
@@ -7,8 +7,8 @@ DESTDIR ?= $(PREFIX)/bin
 MANDIR ?= $(PREFIX)/man/man1
 DEFAULT_CODEC ?= DEFAULT
 
-QT_CFLAGS = $(shell pkg-config QtCore QtGui --cflags)
-QT_LIBS = $(shell pkg-config QtCore QtGui --libs)
+QT_CFLAGS = $(shell pkg-config Qt6Core Qt6Gui Qt6Widgets Qt6Core5Compat --cflags)
+QT_LIBS = $(shell pkg-config Qt6Core Qt6Gui Qt6Widgets Qt6Core5Compat --libs)
 
 
 ifeq '$(DEBUG)' 'yes'

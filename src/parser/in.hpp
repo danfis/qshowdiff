@@ -22,6 +22,7 @@
 
 #include <QTextStream>
 #include <QString>
+#include <list>
 #include <stdio.h>
 
 #ifndef _IN_HPP_

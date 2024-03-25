@@ -23,7 +23,7 @@
 #include <string>
 using namespace std;
 
-#include <QRegExp>
+#include <QtCore5Compat/QRegExp>
 
 #include "parser/choose_parser.hpp"
 #include "parser/parser_git.hpp"

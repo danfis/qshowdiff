@@ -20,11 +20,11 @@
  * along with QShowDiff.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QVBoxLayout>
-#include <QScrollBar>
-#include <QPainter>
-#include <QScrollArea>
-#include <QPaintEvent>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QScrollBar>
+#include <QtGui/QPainter>
+#include <QtWidgets/QScrollArea>
+#include <QtGui/QPaintEvent>
 #include <vector>
 using std::vector;
 

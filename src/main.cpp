@@ -21,8 +21,8 @@
  */
 
 #include <iostream>
-#include <QApplication>
-#include <QTextCodec>
+#include <QtWidgets/QApplication>
+#include <QtCore5Compat/QTextCodec>
 #include <QList>
 #include <QByteArray>
 #include <unistd.h>
@@ -186,9 +186,9 @@ void setUpCodec(QTextCodec *codec)
     }
 
     DBG("Codec: " << (const char *)codec->name());
-    QTextCodec::setCodecForCStrings(codec);
+    //QTextCodec::setCodecForCStrings(codec);
     QTextCodec::setCodecForLocale(codec);
-    QTextCodec::setCodecForTr(codec);
+    //QTextCodec::setCodecForTr(codec);
 }
 
 

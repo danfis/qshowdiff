@@ -20,10 +20,10 @@
  * along with QShowDiff.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QSplitter>
-#include <QWidget>
-#include <QPushButton>
-#include <QVBoxLayout>
+#include <QtWidgets/QSplitter>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QVBoxLayout>
 
 #include "qt/main_window.hpp"
 

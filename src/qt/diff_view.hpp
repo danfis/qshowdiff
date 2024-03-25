@@ -23,9 +23,9 @@
 #ifndef _DIFF_VIEW_H_
 #define _DIFF_VIEW_H_
 
-#include <QWidget>
-#include <QSplitter>
-#include <QScrollArea>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QSplitter>
+#include <QtWidgets/QScrollArea>
 #include "diff/diff.hpp"
 
 class DiffView;
