@@ -20,11 +20,12 @@
  * along with QShowDiff.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QtWidgets/QSplitter>
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QVBoxLayout>
+#include <QSplitter>
+#include <QWidget>
+#include <QPushButton>
+#include <QVBoxLayout>
 
+#include "settings.hpp"
 #include "qt/main_window.hpp"
 
 MainWindow::MainWindow()
@@ -41,6 +42,7 @@ MainWindow::MainWindow()
                 new QListWidgetItem(Diff::instance()->getFilename(i)));
     }
 
+    _file_list->setFont(Settings::File::font);
     _file_list->setCurrentRow(0);
 
     splitter->addWidget(_file_list);

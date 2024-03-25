@@ -23,9 +23,9 @@
 #ifndef _MAIN_WINDOW_H_
 #define _MAIN_WINDOW_H_
 
-#include <QtWidgets/QMainWindow>
+#include <QMainWindow>
 #include <QKeyEvent>
-#include <QtWidgets/QListWidget>
+#include <QListWidget>
 #include "diff/diff.hpp"
 #include "qt/diff_view.hpp"
 

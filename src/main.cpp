@@ -21,8 +21,8 @@
  */
 
 #include <iostream>
-#include <QtWidgets/QApplication>
-#include <QtCore5Compat/QTextCodec>
+#include <QApplication>
+#include <QTextCodec>
 #include <QList>
 #include <QByteArray>
 #include <unistd.h>

@@ -23,7 +23,7 @@
 #ifndef _PARSER_BIG_HPP_
 #define _PARSER_BIG_HPP_
 
-#include <QtCore5Compat/QRegExp>
+#include <QRegExp>
 #include "parser/parser.hpp"
 
 class ParserBig : public Parser {
